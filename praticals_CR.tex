@@ -1,4 +1,4 @@
-\documentclass[pre,aps,preprint,superscriptaddress]{revtex4-1}
+\documentclass[10pt]{article}
 %\documentclass[pre,aps,twocolumn,superscriptaddress]{revtex4-1}
 
 % ADDED PACKAGE
@@ -68,11 +68,8 @@
 \title[TP - UPMC]{Introduction to Plasma Physics with Particle-In-Cell Simulation}
 
 
-\author{C.~Riconda}
-\email[]{caterina.riconda@upmc.fr}
-\address{Laboratoire pour l'Utilisation des Lasers Intenses}
-\author{M. ~Grech}
-\email[]{mickael.grech@polytechnique.edu}
+\author{C.~Riconda\footnote{caterina.riconda@upmc.fr}}
+\author{M. ~Grech\footnote{mickael.grech@polytechnique.edu}}
 \address{Laboratoire pour l'Utilisation des Lasers Intenses}
 
 
@@ -191,10 +188,10 @@ The code input file for this simulation are available in \texttt{TP\_proj1.py} a
 Here, we just reproduce the sections (blocks delimited by \texttt{species} and \texttt{end} in the input file) relating to the definition of the species density profiles. 
 First, the ions are defined as a neutralizing back ground and will not move during the simulation (i.e. their mass can be considered as infinite).
 
-\lstinputlisting[linerange=111-119,firstnumber=111]{TP_proj1.py}
+\lstinputlisting[linerange=43-53,numbers=none]{TP_proj1.py}
 
 
-Now, for electrons, we apply a small perturbation on their density, and will investigate what is the plasma response to such a perturbation.
+Now, for electrons, we apply a small perturbation on their density (\texttt{nb\_density}), and will investigate what is the plasma response to such a perturbation.
 Here, we consider a periodic (cosine) perturbation of the (normalized) electron density:
 \begin{eqnarray}\label{eq_pert}
 n_e(t=0,x) = n_{e0}(x) = 1 + \delta n\,\cos(k\,x)\,,
@@ -207,12 +204,12 @@ In the simulation, what we actually fix are the simulation length $L_{\rm sim}$ 
 {\bf (2.1)} In the limit of small perturbations [$\delta n \ll 1$ in Eq.~\eqref{eq_pert}], derive analytically the equation for $n_e(t,x)$ for a stationary wave. What is the theoretical frequency of plasma oscillations in normalized units?\\
 {\bf (2.2)} Derive the relationship between $n_e(t,x)$, $u_{e,x}(t,x)$ and $E_x(t,x)$ from the fluid equation system including Maxwell's equations.\\
 {\bf (2.3)} In the initial set up the plasma macro-particles  can be uniformly distributed over the whole plasma length. Let us say that the interval between two near neighbors is given by  $x_{0a}-x_{0b}$, then   the equilibrium density is given by  $n_{e0} = \frac{1}{(x_{0a}-x_{0b})}$. A small perturbation $\delta x$  corresponds to a particle displacement and to a new position  $x = x_0 +  \delta x$. At time $t=0$ we initialize the system with a small perturbation and we can deduce the corresponding initial density  $n_e(x,t=0)= \frac{1}{(x_{a}-x_{b})}$. For a small perturbation we can write  $n_e(x,t=0)=n_{e0}+n_{e1}(x)$. Derive   $n_{e1}(x)$ in the limit  $\delta x << (x0a-x0b)$. If we take  $\delta x = x_1 \sin(kx +\varphi)$, what is the form of $n_{1,e}(x)$? \\
-{\bf (2.4)} Run the PIC simulation with input file \texttt{/tests/TP\_proj1.py}. To do so write in the \texttt{smilei/tests/} directory the command 
+{\bf (2.4)} Run the PIC simulation with input file \texttt{TP\_proj1.py}. To do so write in the \texttt{smilei} directory the command 
 \texttt{make TP\_proj1.py}. In the window that appears select diagnostics and choose \texttt{Efields}, \texttt{Ex}, \texttt{Rho\_eon}, and the phase space diagnostic. 
 
-\lstinputlisting[linerange=80-90,firstnumber=80]{TP_proj1.py}
+\lstinputlisting[linerange=68-74,numbers=none]{TP_proj1.py}
 
-\texttt{first} and \texttt{second} refers to the first and second axis of the phase-space. Both are a 3-components list of the kind \texttt{[min,max,num]} giving a \texttt
+\texttt{first} and \texttt{second} refers to the first and second axis of the phase-space. Both are a 3-component lists of the kind \texttt{[min,max,num]} giving a \texttt
 {num} equal binning between \texttt{min} and \texttt{max}.
 
 This will allow you to visualize the electrostatic field energy averaged over space as a function of time,  the electric field and the electron density  as a function of space and the momentum and position of the particles in the code (phase space) by clicking on \texttt{plot}.
@@ -220,7 +217,7 @@ This will allow you to visualize the electrostatic field energy averaged over sp
 Notice that we are exciting a stationary wave. \\
 {\bf (2.5)} Compute analytically the time evolution of the total electrostatic field energy $U_{\rm es}(t) = \int_{0}^{L_{\rm sim}} dx E_x^2(t,x)/2$. Plot the corresponding energy from the PIC simulation. Discuss the results : is the oscillation frequency of the energy consistent with the theoretical expectation?\\
 {\bf (2.6)} From the simulations, deduce the explicit form of $n_{1,e}(x,t)$ and discuss the wave evolution in time. What is the characteristic time for the electric field oscillations (in normalized as well as physical units)? What about density oscillations? What is the relative phase between the electric field and density oscillations?  Are results consistent with theoretical predictions from exercise (2.1) and (2.2)?\\
-{\bf (2.7)} Increase the number of modes to 2 and 3 in the input file (second variable in \texttt{dens\_dbl\_params}). Discuss the resulting changes in terms of the characteristic oscillation time.\\
+{\bf (2.7)} Increase the number of modes to 2 and 3 in the input file (\texttt{xnumber} in \texttt{nb\_density}). Discuss the resulting changes in terms of the characteristic oscillation time.\\
 {\bf (2.8)} Go back to mode 1. Increase the number of macro-particles per-cell used for the electron species. What does it change in your simulation? Why?\\
  \\
 
@@ -241,7 +238,7 @@ As discussed above, the choice of the time interval can affect the precision and
 
 $ $\\
 \noindent{\bf Exercise 3: Effect of the temporal resolution}\\
-\noindent{\bf (3.1)} Verify that you are back to 10 particles per cell. For the temporal resolution $\Delta t = 0.2$ calculate the correction to the frequency from the formula above.  Take in the code \texttt{timestep} = 0.2 , \texttt{cell\_length} = 0.24, \texttt{sim\_lenght}= 24., and in the \texttt{DIAGNOSTICS PARAMETERS} take \texttt{pos\_max} = 24., \texttt{mom\_min}= -0.12, \texttt{mom\_max}= 0.12.   Deduce the oscillation frequency form the time evolution of the electrostatic energy in the code and compare with the theoretical result. Comment the result. \\
+\noindent{\bf (3.1)} Verify that you are back to 10 particles per cell. For the temporal resolution $\Delta t = 0.2$ calculate the correction to the frequency from the formula above.  Take in the code \texttt{timestep} = 0.2 , \texttt{cell\_length} = 0.24, \texttt{sim\_lenght}= 24., and in the \texttt{DIAGNOSTICS PARAMETERS} take   \texttt{pos\_max} = 24., \texttt{mom\_min}= -0.12, \texttt{mom\_max}= 0.12.   Deduce the oscillation frequency form the time evolution of the electrostatic energy in the code and compare with the theoretical result. Comment the result. \\
 {\bf (3.2)} Calculate the value of $\Delta t $ such that the Nyquist frequency is equal to the frequency of oscillation of the electrostatic energy. N.B. $\omega_c = 2 \pi \nu_c$. Why do we calculate this value? \\
 {\bf (3.3)} Measure in the code  the time of oscillation of the electrostatic energy for different value of $\Delta t$ (\texttt{time step}) , and modify \texttt{cell\_length} accordingly: you need to take care to fulfill the CFL condition in your choice of parameters, e.g. by using $\Delta x = 1.2\,\Delta t$). Deduce the oscillation time of the plasma wave, the oscillation frequency of the electrostatic energy, and the oscillation frequency of the of the plasma wave, you can write your results in the table. The maximum value of $\Delta t $ that we will take is $\Delta t = 2.01$, with cell size $2.05$. What happens for this value? \\
 \noindent {\bf (3.4)} Make a plot of the oscillation frequency of the plasma wave as a function of $\Delta t$, and discuss the result. \\
@@ -319,8 +316,8 @@ Note that here, $\omega_{p0}$ denotes the plasma frequency at the total (backgro
 \begin{figure}
 \resizebox{!}{50mm}
 {\includegraphics{Fig_2stream.png}}
-%\caption{ }
-%\label{delay}
+\caption{two stream instability}
+\label{Fig_2stream}
 \end{figure}
 
 $ $\\
@@ -343,18 +340,18 @@ Show that it admits imaginary solution for $v_0 k<1$. To what does this imaginar
 We will now perform numerical simulation using the PIC code SMILEI for different values of $v_0 k$.
 As discussed above, we take $v_0=10^{-1}$ which ensures that relativistic effects can be neglected.
 In addition, we use periodic boundary conditions, so that $k$ is uniquely defined by the simulation length using Eq.~\eqref{eq_k}.
-The input file to start these simulation is given \texttt{/tests/TP\_proj2.py}.
+The input file to start these simulation is given \texttt{TP\_proj2.py}.
 
 $ $\\
 \noindent{\bf Exercise 7: Simulation for $v_0 k > 1$}\\
 \noindent{\bf (7.1)} Compute the values of $v_0 k$ corresponding to different values of $k$ using \texttt{sim\_length} $= 0.62 - 0.60- 0.31 - 0.16$.\\
-\noindent{\bf (7.2)} Run the corresponding simulations.  For the phase-space diagnostics, in the input file \texttt{/tests/TP\_proj2.py}, take \texttt{mom\_min} and \texttt{mom\_max} to $\mp 0.11$, respectively.For simulations with \texttt{sim\_length} $= 0.62$ and $0.60$, extract from the field energy temporal evolution the characteristic frequencies (try to estimate error bars for your measurements). Report them on the analytical predictions (from Exercise 6). Why does it become more difficult to extract the characteristic frequencies for \texttt{sim\_length} $= 0.31 - 0.16$ ?\\
+\noindent{\bf (7.2)} Run the corresponding simulations.  For the phase-space diagnostics, in the input file \texttt{TP\_proj2.py}, take \texttt{mom\_min} and \texttt{mom\_max} to $\mp 0.11$, respectively.For simulations with \texttt{sim\_length} $= 0.62$ and $0.60$, extract from the field energy temporal evolution the characteristic frequencies (try to estimate error bars for your measurements). Report them on the analytical predictions (from Exercise 6). Why does it become more difficult to extract the characteristic frequencies for \texttt{sim\_length} $= 0.31 - 0.16$ ?\\
 \noindent{\bf (7.3)} Discuss the general behavior of (i) the energy in the electrostatic field, and (ii) the behavior in phase-space of the electron species. \\
 
 $ $\\
 \noindent{\bf Exercise 8: Simulation for $v_0 k < 1$}\\
 \noindent{\bf (8.1)}  Compute the values of $v_0 k$ corresponding to \texttt{sim\_length} $= 0.69 - 1.03 - 1.68$. Set the density perturbation $\delta n = 0.001$. \\
-\noindent{\bf (8.2)} Run the corresponding simulations. For the phase-space diagnostics, in the input file \texttt{/tests/TP\_proj2.py}, take \texttt{mom\_min} and \texttt{mom\_max} to $\pm 0.4$, respectively. For each simulation (i.e. for different value of the parameter $v_0 k$), extract from the field energy temporal evolution the characteristic frequency and growth rate of the instability (it is convenient to consider the energy plot in log-scale. To do so, just click on the corresponding panel and letter `l'). Report them on the analytical predictions (from Exercise 6).\\
+\noindent{\bf (8.2)} Run the corresponding simulations. For the phase-space diagnostics, in the input file \texttt{TP\_proj2.py}, take \texttt{mom\_min} and \texttt{mom\_max} to $\pm 0.4$, respectively. For each simulation (i.e. for different value of the parameter $v_0 k$), extract from the field energy temporal evolution the characteristic frequency and growth rate of the instability (it is convenient to consider the energy plot in log-scale. To do so, just click on the corresponding panel and letter `l'). Report them on the analytical predictions (from Exercise 6).\\
 \noindent{\bf (8.3)} For each simulation, discuss the general behavior of (i) the energy in the electrostatic field, and (ii) the behavior in phase-space of the electron species. \\
 \noindent{\bf (8.4)} For these simulations, using the temporal evolution of the electrostatic energy, discuss over what characteristic time the instability is in its linear phase.\\
 \noindent{\bf (8.5)} Now, considering the phase-space distribution of the electron species, discuss what happens in the nonlinear phase of the instability.
@@ -377,15 +374,14 @@ $ $\\
 
 \vfill\eject
 
-\center{\bf \Large APPENDIX}
+\section*{SMILEI namelists}
 
-\section*{\texttt{TP\_proj1.py}}
 \lstinputlisting{TP_proj1.py}
 
-\section*{\texttt{TP\_proj1\_wb.py}}
+\clearpage
 \lstinputlisting{TP_proj1_wb.py}
 
-\section*{\texttt{TP\_proj2.py}}
+\clearpage
 \lstinputlisting{TP_proj2.py}
 
 
