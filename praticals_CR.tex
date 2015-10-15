@@ -1,5 +1,4 @@
-\documentclass[pre,aps,preprint,superscriptaddress]{revtex4-1}
-%\documentclass[pre,aps,twocolumn,superscriptaddress]{revtex4-1}
+\documentclass[11pt,a4paper]{article}
 
 % ADDED PACKAGE
 \usepackage{latexsym}
@@ -14,8 +13,11 @@
 
 \renewcommand{\abstractname}{Summary}
 %tommaso
+\usepackage{tabularx}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
+
+\usepackage{a4wide}
 
 \usepackage{listings}
 \usepackage{color}
@@ -65,39 +67,35 @@
 %-------
 % Title
 %-------
-\title[TP - UPMC]{Introduction to Plasma Physics with Particle-In-Cell Simulation}
+\title{TP - UPMC : Introduction to Plasma Physics with Particle-In-Cell Simulation}
 
 
-\author{C.~Riconda}
-\email[]{caterina.riconda@upmc.fr}
-\address{Laboratoire pour l'Utilisation des Lasers Intenses}
-\author{M. ~Grech}
-\email[]{mickael.grech@polytechnique.edu}
-\address{Laboratoire pour l'Utilisation des Lasers Intenses}
+\author{Caterina~Riconda \footnote{\url{caterina.riconda@upmc.fr}} \and Mickael~Grech \footnote{\url{mickael.grech@polytechnique.edu}}}
 
+\date{16/10/2015}
 
-\date{14/11/2014}
+\maketitle              
+
 
 \begin{abstract}
 These exercises are intended as an introduction to plasma physics through Particle-in-cell (PIC) simulation.
-We first give some details on the open-source PIC code SMILEI\footnote{\url{http://www.maisondelasimulation.fr/projects/Smilei/html}} currently developed at LULI in collaboration with various laboratories (see Ref.~\cite{ref_smilei}).
+We first give some details on the open-source PIC code SMILEI\footnote{\url{http://www.maisondelasimulation.fr/projects/Smilei/html}} currently developed at LULI in collaboration with various laboratories.
 Then we propose two projects: (i) on electron plasma waves, and (ii) on the so-called two-stream instability.
 \end{abstract}
-\maketitle              
 
-\vspace{2cm}
-\tableofcontents
+
+%\tableofcontents
 
 
 %%%%%%%%%%%%%%%%%%
 %  INTRODUCTION  %
 %%%%%%%%%%%%%%%%%%
-\section{Introduction}\label{intro}
+\section*{Introduction}\label{intro}
 
-\subsection{The Particle-In-Cell code SMILEI}
+\subsection*{The Particle-In-Cell code SMILEI}
 
 SMILEI is a Particle-In-Cell (PIC) code initially developed to study laser-plasma interaction at extreme intensities. 
-The PIC method aims at solving the Maxwell-Vlasov system of  equations~\cite{ref_smilei,birdsall_langdon}.
+The PIC method aims at solving the Maxwell-Vlasov system of  equations~\cite{birdsall_langdon}.
 
 The electromagnetic fields ($\vE,\vB$) are described on a (here cartesian) grid, and Maxwell's equations:
 \begin{subequations}\label{eq_Maxwell}
@@ -132,7 +130,7 @@ where $\vx^j$ and $\vp^j$ are the position and momentum of the $j^{th}$ macro-pa
 \end{subequations}
 where we have explicitly written the Lorentz force acting on the $j^{th}$ particle with charge $q$ and mass $m_s$, and $\vE^j$ and $\vB^j$ are the electric and magnetic fields seen by this particle, respectively.
 
-\subsection{Fluid equations}
+\subsection*{Fluid equations}
 
 The fluid equations studied in the course can be deduced by the kinetic description, and are thus contained in the kinetic description 
 in the limit where kinetic effects are not dominant, and the particle distribution function can be described as a local Maxwellian. 
@@ -157,7 +155,7 @@ p_s = n_s T_s ~;~
 T_s = C_s n_s^{\gamma_s-1}
 \end{equation}
 
-\subsection{Normalizations}
+\subsection*{Normalizations}
 
 The PIC code SMILEI is an electromagnetic PIC code. As such, it solves Maxwell's equations in which a characteristic velocity, that of light $c = (\epsilon_0 \mu_0)^{-1/2}$ appears. It is therefore natural to normalize velocities in the code to $c$. Similarly, it is interesting to normalize the charge of all particles in the plasma to $e$ (with $-e$ the charge of the electron) and all masses to $m_e$ the electron mass.
 
@@ -175,9 +173,9 @@ Considering the normalizations discussed above: \\
 %%%%%%%%%%%%%%%%%%
 %        Project 1            %
 %%%%%%%%%%%%%%%%%%
-\section{Project 1: Electron plasma oscillations}\label{proj1}
+\section*{Project 1: Electron plasma oscillations}\label{proj1}
 
-\subsection{Initial set-up}
+\subsection*{Initial set-up}
 
 This first project aims at illustrating a central mechanism of plasma physics, the so-called electron plasma oscillations.
 To do so, we consider a plasma with an initial  constant density $n_{e0} = Z\,n_{i0}$ (equilibrium solution).
@@ -208,7 +206,7 @@ In the simulation, what we actually fix are the simulation length $L_{\rm sim}$ 
 {\bf (2.2)} Derive the relationship between $n_e(t,x)$, $u_{e,x}(t,x)$ and $E_x(t,x)$ from the fluid equation system including Maxwell's equations.\\
 {\bf (2.3)} In the initial set up the plasma macro-particles  can be uniformly distributed over the whole plasma length. Let us say that the interval between two near neighbors is given by  $x_{0a}-x_{0b}$, then   the equilibrium density is given by  $n_{e0} = \frac{1}{(x_{0a}-x_{0b})}$. A small perturbation $\delta x$  corresponds to a particle displacement and to a new position  $x = x_0 +  \delta x$. At time $t=0$ we initialize the system with a small perturbation and we can deduce the corresponding initial density  $n_e(x,t=0)= \frac{1}{(x_{a}-x_{b})}$. For a small perturbation we can write  $n_e(x,t=0)=n_{e0}+n_{e1}(x)$. Derive   $n_{e1}(x)$ in the limit  $\delta x << (x0a-x0b)$. If we take  $\delta x = x_1 \sin(kx +\varphi)$, what is the form of $n_{1,e}(x)$? \\
 {\bf (2.4)} Run the PIC simulation with input file \texttt{TP\_proj1.py}. To do so write in the \texttt{smilei} directory the command 
-\texttt{make TP\_proj1.py}. In the window that appears select diagnostics and choose \texttt{Efields}, \texttt{Ex}, \texttt{Rho\_eon}, and the phase space diagnostic. 
+\texttt{smilei TP\_proj1.py}. In the window that appears select diagnostics and choose \texttt{Efields}, \texttt{Ex}, \texttt{Rho\_eon}, and the phase space diagnostic. 
 
 \lstinputlisting[linerange=68-74,numbers=none]{TP_proj1.py}
 
@@ -224,7 +222,7 @@ Notice that we are exciting a stationary wave. \\
 {\bf (2.8)} Go back to mode 1. Increase the number of macro-particles per-cell used for the electron species. What does it change in your simulation? Why?\\
  \\
 
-\subsection{Effect of the temporal and spatial resolution}
+\subsection*{Effect of the temporal and spatial resolution}
 
 As we are dealing with numerical simulation, the algorithms used require to be stable to fulfill some well-defined conditions:\\
 (i) the FDTD method used to solve Maxwell's equations in SMILEI requires the Courant-Friedrichs-Lewy (CFL) condition to be fulfilled. Basically, this condition states that the time-step $\Delta t$ should be short enough for the information on one cell not to be transported (at the light velocity) further away than one spatial-step $\Delta x$. In 1D, this condition simply requires that $c\,\Delta t < \Delta x$ (i.e. one has to take a value of \texttt{time\_step} in our simulation (normalized) input file always smaller than \texttt{cell\_length}). Keep this in mind when changing the time-step in the simulations.\\
@@ -247,13 +245,13 @@ $ $\\
 \noindent {\bf (3.4)} Make a plot of the oscillation frequency of the plasma wave as a function of $\Delta t$, and discuss the result. \\
 
 
- 
-\begin{figure}
-\resizebox{!}{110mm}
-{\includegraphics{table.png}}
-%\caption{ }
-%\label{delay}
-\end{figure}
+\begin{tabularx}{\textwidth}{X|X|X|X|X}
+\Large\textbf{$\Delta t$} & \Large\textbf{$\tau_{E,n}$} & \Large\textbf{$\tau_{P,n}$} &  \Large\textbf{$\omega_{E,n}$} & \Large\textbf{$\omega_{P,n}$} \\
+\hline
+ & & & & \\  & & & & \\ & & & & \\ & & & & \\  & & & & \\ & & & & \\  & & & & \\  & & & & \\ & & & & \\ & & & & \\  & & & & \\ & & & & \\
+ & & & & \\  & & & & \\ & & & & \\ & & & & \\  & & & & \\ & & & & \\  & & & & \\  & & & & \\ & & & & \\ & & & & \\  & & & & \\ & & & & \\
+
+\end{tabularx}
 
 
 $ $\\
@@ -265,14 +263,15 @@ In this exercise we will fix $\Delta t = 0.01$, the plasma size to $1.$, the cel
 {\bf (4.4)} Vary the wave vector $k$ up to the theoretical limiting value  and further. For each $k$ value considered measure the period of the electrostatic fields energy oscillation, deduce the period of the plasma oscillations and the frequency for the energy and the fields. 
 You can use the table to note your results. Plot the oscillation frequency as a function of the wave vector. Comment the plot. \\
 
-\begin{figure}
-\resizebox{!}{110mm}
-{\includegraphics{table_k.png}}
-%\caption{ }
-%\label{delay}
-\end{figure}
+\begin{tabularx}{\textwidth}{X|X|X|X|X}
+\Large\textbf{$k$} & \Large\textbf{$\tau_{E,n}$} & \Large\textbf{$\tau_{P,n}$} &  \Large\textbf{$\omega_{E,n}$} & \Large\textbf{$\omega_{P,n}$} \\
+\hline
+ & & & & \\  & & & & \\ & & & & \\ & & & & \\  & & & & \\ & & & & \\  & & & & \\  & & & & \\ & & & & \\ & & & & \\  & & & & \\ 
+ & & & & \\  & & & & \\ & & & & \\ & & & & \\  & & & & \\ & & & & \\  & & & & \\  & & & & \\ & & & & \\ & & & & \\  & & & & \\ 
+\end{tabularx}
 
-\subsection{Kinetic (wave-breaking) effects}
+
+\subsection*{Kinetic (wave-breaking) effects}
 
 We will now investigate the changes brought by taking a large amplitude for the initial density perturbation ($\delta n \lesssim 1$). To do so, it is necessary to take sufficiently small time-step and cell-length (take care to fulfill the CFL condition in your choice of parameters, e.g. by using $\Delta x = 2\,\Delta t $).
 
@@ -287,9 +286,9 @@ $ $\\
 %%%%%%%%%%%%%%%%%%
 %        Project 2            %
 %%%%%%%%%%%%%%%%%%
-\section{Project 2: Two-stream instability}\label{proj2}
+\section*{Project 2: Two-stream instability}\label{proj2}
 
-\subsection{Initial set-up and theory}
+\subsection*{Initial set-up and theory}
 
 This second project aims at illustrating the so-called two-stream instability.
 To do so, we consider a 1D infinite plasma with averaged constant density $n_{e0} = 1$. 
@@ -317,8 +316,7 @@ where $k$ is in unit of $\omega_{p0}/c$ and $\omega$ is in units of $\omega_{p0}
 Note that here, $\omega_{p0}$ denotes the plasma frequency at the total (background) electron density $n_0$, while the beam (half-density) $n_0/2 = \langle n_e^{\pm}(t=0) \rangle$ was used in the lecture.
 
 \begin{figure}
-\resizebox{!}{50mm}
-{\includegraphics{Fig_2stream.png}}
+\centering\includegraphics[width=0.7\textwidth]{Fig_2stream.png}
 \caption{two stream instability}
 \label{Fig_2stream}
 \end{figure}
@@ -338,7 +336,7 @@ Show that it admits imaginary solution for $v_0 k<1$. To what does this imaginar
 {\bf (6.4)} Considering that the dispersion relation is obtained assuming all perturbed quantities vary as $\exp[i(\omega t - k\,x)]$, show that, for $v_0 k>1$, the energy in the electrostatic field varies as $A + B\,\cos(2\,\omega_a\,t) + C\,\cos(2\,\omega_b\,t) + D\,\cos[(\omega_a-\omega_b)\,t] + E\,\cos[(\omega_a+\omega_b)\,t]$, with $A$, $B$, $C$, $D$ and $E$ some numerical constants. What do $\omega_a$ and $\omega_b$ stand for?\\
 {\bf (6.5)} Similarly, show that, for $v_0 k<1$, the energy in the electrostatic field goes as $A + B\,\cos(2\omega t) + C\,\cos(\omega t)\,\exp(\gamma t)+D\,\exp(2\gamma t)$. What do $\omega$ and $\gamma$ stand for? 
 
-\subsection{Numerical simulation of the 2-stream instability}
+\subsection*{Numerical simulation of the 2-stream instability}
 
 We will now perform numerical simulation using the PIC code SMILEI for different values of $v_0 k$.
 As discussed above, we take $v_0=10^{-1}$ which ensures that relativistic effects can be neglected.
@@ -347,7 +345,7 @@ The input file to start these simulation is given \texttt{TP\_proj2.py}.
 
 $ $\\
 \noindent{\bf Exercise 7: Simulation for $v_0 k > 1$}\\
-\noindent{\bf (7.1)} Compute the values of $v_0 k$ corresponding to different values of $k$ using \texttt{sim\_length} $= 0.62 - 0.60- 0.31 - 0.16$.\\
+\noindent{\bf (7.1)} Compute the values of $v_0 k$ corresponding to different values of $k$ using \\ \texttt{sim\_length} $= 0.62 - 0.60- 0.31 - 0.16$.\\
 \noindent{\bf (7.2)} Run the corresponding simulations.  For the phase-space diagnostics, in the input file \texttt{TP\_proj2.py}, take \texttt{mom\_min} and \texttt{mom\_max} to $\mp 0.11$, respectively.For simulations with \texttt{sim\_length} $= 0.62$ and $0.60$, extract from the field energy temporal evolution the characteristic frequencies (try to estimate error bars for your measurements). Report them on the analytical predictions (from Exercise 6). Why does it become more difficult to extract the characteristic frequencies for \texttt{sim\_length} $= 0.31 - 0.16$ ?\\
 \noindent{\bf (7.3)} Discuss the general behavior of (i) the energy in the electrostatic field, and (ii) the behavior in phase-space of the electron species. \\
 
@@ -367,7 +365,6 @@ $ $\\
 
 \begin{thebibliography}{2}
 
-\bibitem{ref_smilei} More info on SMILEI at: http://www.maisondelasimulation.fr/en/Phocea/Page/index.php?id=94.
 \bibitem{birdsall_langdon} C.~K.~Birdsall and A.~B.~Langdon, {\it Plasma physics via computer simulation}, McGraw-Hill, New York (1985).
 \bibitem{taflove_2005} A.~Taflove and S.~C.~Hagness, {\it Computational Electrodynamics: The Finite-Difference Time-Domain Method}, 3rd~ed. Norwood, MA: Artech House (2005).
 \bibitem{boris_1970} J.~P.~Boris, {\it Relativistic plasma simulations - Optimization of a hybrid code}, Proc. 4th Conf. Num. Sim. of Plasmas {\bf 3}, 1970.
