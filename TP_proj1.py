@@ -62,7 +62,8 @@ print_every=10*every
 
 DiagScalar (
  	precision = 3,
-	vars = ['Etot', 'Eparticles', 'EFields', 'E_eon', 'N_eon', 'Ex_U']
+ 	every = int(0.1/timestep)
+	vars = ['Utot', 'Ukin', 'Uelm', 'Ukin_eon', 'Ntot_eon', 'Uelm_Ex']
 )
  
 DiagPhase (

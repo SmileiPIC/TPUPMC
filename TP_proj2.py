@@ -12,11 +12,11 @@ sim_time = 100.0
 
 # SIMULATION BOX 
 
-cell_length = 1.0e-2
-sim_length  = 1.03
+cell_length = [1.0e-2]
+sim_length  = [1.03]
 
 # time step : time step
-timestep = 0.9*cell_length
+timestep = 0.9*cell_length[0]
 
 # order of interpolation
 interpolation_order = 2
@@ -46,7 +46,7 @@ Species(
 	n_part_per_cell = npart/2,
 	mass = 1.0,
 	charge = -1.0,
-	nb_density = 0.5,
+	nb_density = cosine(0.5,amplitude=0.01,xnumber=1),
 	bc_part_type_west = "none",
 	bc_part_type_east = "none",
 	mean_velocity = [0.1, 0, 0] 
@@ -59,7 +59,7 @@ Species(
 	n_part_per_cell = npart/2,
 	mass = 1.0,
 	charge = -1.0,
-	nb_density = 0.5,
+	nb_density = cosine(0.5,amplitude=0.01,xnumber=1),
 	bc_part_type_west = "none",
 	bc_part_type_east = "none",
 	mean_velocity = [-0.1, 0, 0] 
@@ -74,7 +74,7 @@ every = 20
 
 DiagScalar (
  	precision = 3,
-	vars = ['Etot', 'Eparticles', 'EFields', 'E_eon1', 'N_eon1', 'E_eon2', 'N_eon2', 'Ex_U']
+	vars = ['Utot', 'Ukin', 'Uelm', 'Ukin_eon1', 'Ukin_eon2', 'Ntot_eon1', 'Ntot_eon2', 'Uelm_Ex']
 )
  
 # PHASE-SPACE DIAGNOSTICS
