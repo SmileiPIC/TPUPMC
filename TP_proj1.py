@@ -19,7 +19,7 @@ timestep = 0.01
 cell_length = [0.01]
 
 # sim_length  : length of the simulation 
-sim_length  = [1.0]
+sim_length  = 1.0
 
 # ELECTROMAGNETIC BOUNDARY CONDITIONS
 bc_em_type_x = ['periodic']
@@ -62,7 +62,6 @@ print_every=10*every
 
 DiagScalar (
  	precision = 3,
- 	every = int(0.1/timestep)
 	vars = ['Utot', 'Ukin', 'Uelm', 'Ukin_eon', 'Ntot_eon', 'Uelm_Ex']
 )
  
