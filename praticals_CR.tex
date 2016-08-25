@@ -71,7 +71,7 @@
 \title{TP - UPMC: Introduction to Plasma Physics with Particle-In-Cell Simulation}
 
 
-\author{Caterina~Riconda \footnote{\url{caterina.riconda@upmc.fr}}, \and Tommaso Vinci \footnote{\url{tommaso.vinci@polytechnique.edu}}\and Mickael~Grech \footnote{\url{mickael.grech@polytechnique.edu}}}
+\author{Caterina~Riconda \footnote{\url{caterina.riconda@upmc.fr}}, \and Tommaso Vinci \footnote{\url{tommaso.vinci@polytechnique.edu}}, \and Mickael~Grech \footnote{\url{mickael.grech@polytechnique.edu}}}
 
 \date{16/10/2015}
 
@@ -80,7 +80,7 @@
 
 \begin{abstract}
 These exercises are intended as an introduction to plasma physics through Particle-in-cell (PIC) simulation.
-We first give some details on the open-source PIC code SMILEI\footnote{\url{http://www.maisondelasimulation.fr/projects/Smilei/html}} currently developed at LULI in collaboration with various laboratories.
+We first give some details on the open-source PIC code SMILEI\footnote{\url{http://www.maisondelasimulation.fr/smilei}} currently developed at LULI in collaboration with various laboratories.
 
 We propose two projects: 
 \begin{enumerate}
@@ -193,8 +193,9 @@ The plasma length is \texttt{sim\_length}  (in units of $c/\omega_{pe}$), and th
 
 The code input file for this simulation are available in \texttt{TP\_proj1.py} and reproduced in annex of this document.
 Here, we just reproduce the sections (Python classes) relating to the definition of the species an their density profiles. 
+
 First, the ions are defined as a neutralizing back ground and will not move during the simulation (i.e. their mass can be considered as infinite: \texttt{time\_frozen > sim\_time}):
-\lstinputlisting[linerange=29-41,numbers=none]{TP_proj1.py}
+\lstinputlisting[linerange=20-31,numbers=none]{TP_proj1.py}
 
 Now, for electrons, we apply a small perturbation on their density (\texttt{nb\_density}), and will investigate what is the plasma response to such a perturbation.
 Here, we consider a periodic (cosine) perturbation of the (normalized) electron density:
@@ -205,7 +206,7 @@ where $k$ is the mode of the parturbation and $\delta n$ its amplitude.
 In the simulation, what we actually fix are the simulation length $L_{\rm sim}$ (\texttt{sim\_length}) and the number of modes (see below) $N$ so that $k=2\pi\,N/L_{\rm sim}$.
 
 Which translates in the code below ($N$=\texttt{xnumber}):
-\lstinputlisting[linerange=43-53,numbers=none]{TP_proj1.py}
+\lstinputlisting[linerange=33-43,numbers=none]{TP_proj1.py}
 
 
 \subsection*{Exercise 2: Simulation of electron-plasma oscillations}
@@ -216,7 +217,7 @@ Which translates in the code below ($N$=\texttt{xnumber}):
 {\bf (2.4)} Run the PIC simulation with input file \texttt{TP\_proj1.py}. To do so write in the \texttt{smilei} directory the command 
 \texttt{smilei.sh TPUPMC/TP\_proj1.py}. In the window that appears select diagnostics and choose \texttt{Uelm}, \texttt{Ex}, \texttt{Rho\_eon}, \texttt{jx}, and the phase space diagnostic:
 
-\lstinputlisting[linerange=68-75,numbers=none]{TP_proj1.py}
+\lstinputlisting[linerange=51-59,numbers=none]{TP_proj1.py}
 
 Where \texttt{first} and \texttt{second} refers to the first and second axis of the phase-space (in this case x-px, thus first refers to space coordinate, and second to momentum coordinate) . Both are a 3-component lists of the kind \texttt{[min,max,num]} giving a \texttt{num} equal binning between \texttt{min} and \texttt{max}. Typically the normalized momentum will be same order of magnitude of the normalized density fluctuations (the quantity  \texttt{amplitude} in \texttt{nb\_density}).
 
@@ -383,6 +384,12 @@ The input file to start these simulation is given \texttt{TP\_proj2.py}.
 %  REFERENCES  %
 %%%%%%%%%%%%%%%%
 
+
+
+\section*{SMILEI namelists}
+\lstinputlisting{TP_proj1.py}
+\lstinputlisting{TP_proj2.py}
+
 \begin{thebibliography}{2}
 
 \bibitem{birdsall_langdon} C.~K.~Birdsall and A.~B.~Langdon, {\it Plasma physics via computer simulation}, McGraw-Hill, New York (1985).
@@ -391,12 +398,6 @@ The input file to start these simulation is given \texttt{TP\_proj2.py}.
 
 
 \end{thebibliography}
-
-\vfill\eject
-
-\section*{SMILEI namelists}
-\lstinputlisting{TP_proj1.py}
-\lstinputlisting{TP_proj2.py}
 
 
 \end{document}
