@@ -35,7 +35,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
 
-import tables as tb
+from Smilei import *
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -49,11 +49,9 @@ class smileiQtPlot(QWidget):
     scalarDict=dict()
     fieldDict=dict()
     phaseDict=dict()
-    fieldFile=None
-    phaseFile=None
     nplots=0
     ax={}
-    dirName=None
+    dirName='.'
     someCheckBoxChanged=True
     pauseSignal=pyqtSignal()
     shiftPressed=False
@@ -66,6 +64,8 @@ class smileiQtPlot(QWidget):
         self.ui=uic.loadUi(uiFile,self)
         
         self.dirName=dirName
+        self.smilei=Smilei(self.dirName)
+        
         self.parent=parent
 
         self.parent.timer.timeout.connect(self.next)
@@ -108,68 +108,62 @@ class smileiQtPlot(QWidget):
         self.ui.plotLayout.addWidget(self.canvas)
         self.ui.plotLayout.addWidget(self.toolbar)
 
-        fname=os.path.join(dirName, "scalars.txt")
-        if os.path.isfile(fname) :
-            self.scalarData = np.loadtxt(fname)
-            names=[]
-            for line in open(fname):
-                li=line.strip()
-                if li.startswith("#"):
-                    list=line.split()
-                    names.append(list[-1])
-       
-            scalars_names=names[1:-2]
-            for i in range(len(scalars_names)):
-                my_button= QCheckBox(scalars_names[i])
-                my_button.stateChanged.connect(self.checkBoxChanged)
+#retrieve stuff from namelist
+        self.cell_length=self.smilei.namelist.Main.cell_length[0]
+        self.timestep=self.smilei.namelist.Main.timestep
+        self.sim_length=self.smilei.namelist.Main.sim_length
 
-                self.ui.layoutScalars.addWidget(my_button)
-                
-            self.ui.layoutScalars.addStretch()
-        else :
-            print "Problem reading ",fname
-#             self.deleteLater()
-
-        self.fieldSteps=[]
-        fname=os.path.join(dirName, "Fields.h5")
-        if os.path.isfile(fname) :
-
-            self.fieldFile=tb.openFile(fname)
-            self.cell_length=self.fieldFile.root._v_attrs.cell_length[0]
-            self.res_time=self.fieldFile.root._v_attrs.res_time
-            self.sim_length=self.fieldFile.root._v_attrs.sim_length
-            # JDT self.fieldEvery=self.fieldFile.root._v_attrs.every
+#scalars
+        scalarSteps=[]
+        for scalar in self.smilei.Scalar().getScalars():
+            if len(scalarSteps) ==0:
+                scalarSteps=self.smilei.Scalar(scalar).getAvailableTimesteps()
+            else:
+                if not np.array_equal(scalarSteps,self.smilei.Scalar(scalar).getAvailableTimesteps()):
+                    log.error("Problem reading scalarSteps %s"%scalar)
+            my_button= QCheckBox(scalar)
+            my_button.stateChanged.connect(self.checkBoxChanged)
+            self.ui.layoutScalars.addWidget(my_button)
             
-            first=True
-            for group in self.fieldFile.listNodes("/", classname='Group'):
-                self.fieldSteps.append(group._v_name)
-                if first:
-                    first=False
-                    for array in group:
-                        my_button= QCheckBox(array._v_name)
-                        my_button.stateChanged.connect(self.checkBoxChanged)
-                        self.ui.layoutFields.addWidget(my_button)
+        self.ui.layoutScalars.addStretch()
 
-            self.ui.layoutFields.addStretch()
-            self.ui.slider.setRange(0,len(self.fieldSteps)-1)
-        else :
-            print "Problem reading ",fname
-#             self.deleteLater()
+#fields
+        self.fieldSteps=self.smilei.Field().getAvailableTimesteps()
+        if not np.array_equal(scalarSteps,self.fieldSteps): 
+            newfieldSteps=[]
+            for i in range(0,min(len(scalarSteps),len(self.fieldSteps))):
+                if scalarSteps[i] == self.fieldSteps[i]:
+                    newfieldSteps.append(scalarSteps[i])
+                else:
+                    break
+            self.fieldSteps=newfieldSteps
+            log.warning("Problem reading fieldSteps")
+        for field in self.smilei.Field().getFields():
+            my_button= QCheckBox(field)
+            my_button.stateChanged.connect(self.checkBoxChanged)
+            self.ui.layoutFields.addWidget(my_button)
 
-        self.ui.spinStep.setSuffix("/"+str(len(self.fieldSteps)-1))
-        self.ui.spinStep.setMaximum(len(self.fieldSteps)-1)
-        
-        fname=os.path.join(dirName, "PhaseSpace.h5")
-        if os.path.isfile(fname) :
-            self.phaseFile=tb.openFile(fname)
-            for phaseData in self.phaseFile.walkNodes("/", classname='Array'):
-                my_button= QCheckBox(phaseData._v_pathname)
-                my_button.stateChanged.connect(self.checkBoxChanged)
-                self.ui.layoutPhase.addWidget(my_button)
-            self.ui.layoutPhase.addStretch()
-        else :
-            print "Problem reading ",fname
-#             self.deleteLater()
+        self.ui.layoutFields.addStretch()
+
+        self.ui.slider.setRange(0,len(self.fieldSteps))
+        self.ui.spinStep.setSuffix("/"+str(len(self.fieldSteps)))
+        self.ui.spinStep.setMaximum(len(self.fieldSteps))
+
+
+#phase spaces
+        i=0
+        for phase in self.smilei.namelist.DiagParticles:
+            if not np.array_equal(self.fieldSteps,self.smilei.ParticleDiagnostic(i).getAvailableTimesteps()): 
+                log.warning("Problem reading phaseSteps")
+
+            name=str(i)+' '
+            for ax in phase.axes:
+                name+=ax[0] 
+            my_button= QCheckBox(name)
+            my_button.stateChanged.connect(self.checkBoxChanged)
+            self.ui.layoutPhase.addWidget(my_button)
+            i=i+1
+        self.ui.layoutPhase.addStretch()
 
         self.load_settings()
 
@@ -179,19 +173,11 @@ class smileiQtPlot(QWidget):
         
         
     def reloadAll(self):
-        self.fieldSteps=[]
-        
-        fname=os.path.join(self.dirName, "Fields.h5")
-        if isinstance(self.fieldFile,tb.file.File):
-            self.fieldFile.close()
-        if os.path.isfile(fname) :
-            self.fieldFile=tb.openFile(fname)
-            for group in self.fieldFile.listNodes("/", classname='Group'):
-                self.fieldSteps.append(group._v_name)
-        print "last:",self.fieldSteps[-1]
-        self.ui.spinStep.setSuffix("/"+str(len(self.fieldSteps)-1))
-        self.ui.spinStep.setMaximum(len(self.fieldSteps)-1)
-        self.ui.slider.setRange(0,len(self.fieldSteps)-1)
+        self.smilei=Smilei(self.dirName)
+        self.fieldSteps=self.smilei.Field().getAvailableTimesteps()
+        self.ui.slider.setRange(0,len(self.fieldSteps))
+        self.ui.spinStep.setSuffix("/"+str(len(self.fieldSteps)))
+        self.ui.spinStep.setMaximum(len(self.fieldSteps))
         self.preparePlots()
         
     def doSavePoints(self):
@@ -270,9 +256,10 @@ class smileiQtPlot(QWidget):
                 if chkbox.isChecked() :
                     self.nplots+=1
 
+        self.fig.clear()
         if self.nplots > 0:
-            self.fig.clear()
             self.title=self.fig.suptitle('')       
+            
 
             self.ax={}
               
@@ -283,19 +270,20 @@ class smileiQtPlot(QWidget):
                 col+=1
                 if i.isChecked() :
                     name=str(i.text())
-                    if not (name in self.fieldDict):
-                        x=self.scalarData[:,0]
-                        y=self.scalarData[:,col]
-                        self.scalarDict[name]=(x,y)
-                        ax=self.fig.add_subplot(self.nplots,1,plot+1)
-                        ax.xaxis.grid(True)
-                        ax.yaxis.grid(True)
-                        ax.plot(x,y)
-                        ax.set_xlim(x.min(),x.max())
-                        
-                        ax.set_ylabel(name)
-                        ax.axvline(x=0,c="red",linewidth=2,zorder=0, clip_on=False)
-                        self.ax[name]=ax
+                    
+                    x=self.smilei.Scalar(name).getAvailableTimesteps()
+                    y=self.smilei.Scalar(name).getData()
+                    self.scalarDict[name]=(x,y)
+                    ax=self.fig.add_subplot(self.nplots,1,plot+1)
+                    ax.xaxis.grid(True)
+                    ax.yaxis.grid(True)
+                    ax.plot(x,y)
+                    ax.set_xlim(x.min(),x.max())
+                    
+                    ax.set_ylabel(name)
+                    ax.axvline(x=0,c="red",linewidth=2,zorder=0, clip_on=False)
+                    self.ax[name]=ax
+
                     plot+=1
                 
 
@@ -309,16 +297,16 @@ class smileiQtPlot(QWidget):
 
                     data=[]
                     name=str(i.text())
-                    for d in self.fieldFile.root:
-                        data.append(d._f_getChild(name))
-                        
+                    log.info("\tField %s"%name)
+                    data=self.smilei.Field(name).getData()
+                                        
                     self.fieldDict[name]=data
                     
                     if len(self.sim_length) == 1 :
-                        ax.set_xlim(0,self.sim_length)
+                        ax.set_xlim(0,self.sim_length[0])
                         ax.set_ylabel(name)
                         x=np.array(range(len(data[0])))*self.cell_length
-                        y=data[0].read()
+                        y=data[0]
                         ax.plot(x,y)
                         self.ax[name]=ax
                     elif len(self.sim_length) == 2 :
@@ -338,8 +326,17 @@ class smileiQtPlot(QWidget):
             for i in self.ui.phase.findChildren(QCheckBox):
                 if i.isChecked() :
                     name=str(i.text())
-                    node=self.phaseFile.getNode(name)
-                    self.phaseDict[name]=node
+                    number=int(name.split(' ')[0])
+                    self.phaseDict[name]=self.smilei.ParticleDiagnostic(number)
+                    
+                    phase_axes=zip(*self.smilei.namelist.DiagParticles[number].axes)[0]
+                    if len(phase_axes) is not 2:
+                        log.error("phasespace len is not 2 : %s"%name)
+                        
+                    dict_axes=self.phaseDict[name].get()
+                    my_extent=[dict_axes[phase_axes[0]][0],dict_axes[phase_axes[0]][-1],dict_axes[phase_axes[1]][0],dict_axes[phase_axes[1]][-1]]
+                    
+                    
                     ax=self.fig.add_subplot(self.nplots,1,plot+1)
                     ax.xaxis.grid(True)
                     ax.yaxis.grid(True)
@@ -347,8 +344,8 @@ class smileiQtPlot(QWidget):
                     divider = make_axes_locatable(ax)
                     cax = divider.new_horizontal(size="2%", pad=0.05)
                     self.fig.add_axes(cax)
-
-                    im=ax.imshow([[0]],extent=node._v_attrs.extents.reshape(4).tolist(),aspect='auto',origin='lower')
+                    
+                    im=ax.imshow([[0]],extent=my_extent,aspect='auto',origin='lower')
                     im.set_interpolation('nearest')
                     cb=plt.colorbar(im, cax=cax)
 
@@ -442,7 +439,7 @@ class smileiQtPlot(QWidget):
             self.ui.logger.moveCursor (QTextCursor.End);
             for i in range(len(self.fig.axes)) :
                 if self.fig.axes[i] == event.inaxes:                    
-                    # JDT txt = "%d %G %G %G\n" % (i, self.step/self.res_time*self.fieldEvery, event.xdata, event.ydata)
+                    # JDT txt = "%d %G %G %G\n" % (i, self.step/self.timestep*self.fieldEvery, event.xdata, event.ydata)
                     txt = "%d %G %G\n" % (i, event.xdata, event.ydata)
                     QApplication.clipboard().setText(txt)
                     self.ui.logger.insertPlainText(txt);
@@ -460,14 +457,16 @@ class smileiQtPlot(QWidget):
         self.slider.setValue(self.step)
         
         self.ui.spinStep.setValue(self.step)
-        # JDT time=float(self.step)/self.res_time*self.fieldEvery
-        time=float(self.step)/self.res_time
+        # JDT time=float(self.step)/self.timestep*self.fieldEvery
+        time=self.fieldSteps[self.step]
+        
+        self.fig.suptitle("Time %g"%time)
         
         for name in self.scalarDict:
             self.ax[name].lines[-1].set_xdata(time)
            
         for name in self.fieldDict:
-            data=self.fieldDict[name][self.step].read()
+            data=self.fieldDict[name][self.step]
             if len(self.sim_length) == 1 :
                 self.ax[name].lines[-1].set_ydata(data)
                 if self.ui.autoScale.isChecked():
@@ -481,24 +480,19 @@ class smileiQtPlot(QWidget):
 
                     
         for name in self.phaseDict:
-            data=self.phaseDict[name][self.step].T
+            data=self.phaseDict[name].getData()[self.step].T
             im=self.ax[name].images[-1]
             im.set_data(data)
             if self.ui.autoScale.isChecked():
                 im.set_clim(data.min(),data.max())
-                
-                
-        self.title.set_text('Time: %.3f'%time)
+                                
         self.canvas.draw()
         if self.ui.saveImages.isChecked():
             fname=self.dirName+'/frame-%06d.png' % self.step
-            print fname
             self.fig.savefig(fname)
 
     def closeEvent(self,event):
         self.save_settings()
-        if self.fieldFile is not None : self.fieldFile.close()
-        if self.phaseFile is not None : self.phaseFile.close()
         self.parent.plots.remove(self)
         QApplication.processEvents()
         self.deleteLater()

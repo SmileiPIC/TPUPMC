@@ -7,13 +7,14 @@ npart=10
 Main(
     geometry = "1d3v",
     interpolation_order = 2,
-    sim_time = 100.0,
+    sim_time = 50.0,
     cell_length = [0.01],
     timestep = 0.01,
-    sim_length  = [100.0],
+    sim_length  = [10.0],
     number_of_patches = [ 2 ],
     print_every = my_every,
-    bc_em_type_x = ['periodic']
+    bc_em_type_x = ['periodic'],
+    iteration_max_poisson=0
 )
 
 Species(
@@ -36,10 +37,10 @@ Species(
 	n_part_per_cell = npart/2,
 	mass = 1.0,
 	charge = -1.0,
-	nb_density = cosine(0.5,xamplitude=0.01,xnumber=1),
+	nb_density = cosine(0.5,xamplitude=0.2,xnumber=1),
 	bc_part_type_west = "none",
 	bc_part_type_east = "none",
-	mean_velocity = [0.1, 0, 0] 
+	mean_velocity = [0.2, 0, 0] 
 )
 
 Species(
@@ -49,10 +50,10 @@ Species(
 	n_part_per_cell = npart/2,
 	mass = 1.0,
 	charge = -1.0,
-	nb_density = cosine(0.5,xamplitude=0.01,xnumber=1),
+	nb_density = cosine(0.5,xamplitude=0.2,xnumber=1),
 	bc_part_type_west = "none",
 	bc_part_type_east = "none",
-	mean_velocity = [-0.1, 0, 0] 
+	mean_velocity = [-0.2, 0, 0] 
 )
 
 DiagScalar (
