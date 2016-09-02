@@ -277,6 +277,7 @@ class smileiQtPlot(QWidget):
                     ax=self.fig.add_subplot(self.nplots,1,plot+1)
                     ax.xaxis.grid(True)
                     ax.yaxis.grid(True)
+                    print len(x), len(y)
                     ax.plot(x,y)
                     ax.set_xlim(x.min(),x.max())
                     

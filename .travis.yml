@@ -1,0 +1,22 @@
+os: linux
+ 
+sudo: required
+dist: trusty
+
+before_install:
+- sudo apt-get install texlive-latex-base texlive-latex-recommended texlive-fonts-recommended
+
+script:
+  - pdflatex -interaction nonstopmode -halt-on-error -file-line-error praticals_CR.tex
+  - pdflatex -interaction nonstopmode -halt-on-error -file-line-error praticals_CR.tex
+
+install:
+
+deploy:
+  provider: releases
+  api_key: $deployKey
+  file: "praticals_CR.pdf"
+  skip_cleanup: true
+  overwrite: true
+  on:
+    tags: true

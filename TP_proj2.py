@@ -2,19 +2,20 @@
 # SIMULATION TP_proj2.py
 # ---------------------------------------------
 my_every=20
-npart=10
-
+npart=5
+velocity=0.02
+amplitude=0.02
 Main(
     geometry = "1d3v",
     interpolation_order = 2,
     sim_time = 50.0,
-    cell_length = [0.01],
-    timestep = 0.01,
-    sim_length  = [10.0],
+    cell_length = [0.02],
+    timestep = 0.02,
+    sim_length  = [1.0],
     number_of_patches = [ 2 ],
     print_every = my_every,
     bc_em_type_x = ['periodic'],
-    iteration_max_poisson=0
+    poisson_iter_max=0
 )
 
 Species(
@@ -37,10 +38,10 @@ Species(
 	n_part_per_cell = npart/2,
 	mass = 1.0,
 	charge = -1.0,
-	nb_density = cosine(0.5,xamplitude=0.2,xnumber=1),
+	nb_density = cosine(0.5,xamplitude=amplitude,xnumber=1),
 	bc_part_type_west = "none",
 	bc_part_type_east = "none",
-	mean_velocity = [0.2, 0, 0] 
+	mean_velocity = [velocity, 0, 0] 
 )
 
 Species(
@@ -50,10 +51,10 @@ Species(
 	n_part_per_cell = npart/2,
 	mass = 1.0,
 	charge = -1.0,
-	nb_density = cosine(0.5,xamplitude=0.2,xnumber=1),
+	nb_density = cosine(0.5,xamplitude=amplitude,xnumber=1),
 	bc_part_type_west = "none",
 	bc_part_type_east = "none",
-	mean_velocity = [-0.2, 0, 0] 
+	mean_velocity = [-velocity, 0, 0] 
 )
 
 DiagScalar (
@@ -68,7 +69,7 @@ DiagParticles(
  	species = ['eon1', 'eon2'],
 	axes = [
 		["x", 0., 1., 100],
-		["px", -0.4, 0.4, 100]
+		["px", -4*velocity, 4*velocity, 100]
 	]
 )
 
