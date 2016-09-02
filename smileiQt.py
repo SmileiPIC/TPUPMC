@@ -152,6 +152,7 @@ class smileiQtPlot(QWidget):
 
 #phase spaces
         i=0
+        # self.smilei.ParticleDiagnostic(0)._type ...
         for phase in self.smilei.namelist.DiagParticles:
             if not np.array_equal(self.fieldSteps,self.smilei.ParticleDiagnostic(i).getAvailableTimesteps()): 
                 log.warning("Problem reading phaseSteps")
@@ -318,7 +319,7 @@ class smileiQtPlot(QWidget):
 
                         im=ax.imshow([[0]],extent=(0,self.sim_length[0],0,self.sim_length[1]), aspect='auto',origin='lower')
                         im.set_interpolation('nearest')
-                        cb=plt.colorbar(im, cax=cax)
+                        cb=self.fig.colorbar(im, cax=cax, ax=ax)
                         self.ax[name]=ax
 
                     plot+=1
@@ -328,15 +329,14 @@ class smileiQtPlot(QWidget):
                 if i.isChecked() :
                     name=str(i.text())
                     number=int(name.split(' ')[0])
-                    self.phaseDict[name]=self.smilei.ParticleDiagnostic(number)
-                    
-                    phase_axes=zip(*self.smilei.namelist.DiagParticles[number].axes)[0]
-                    if len(phase_axes) is not 2:
+                    phase=self.smilei.ParticleDiagnostic(number)
+                    self.phaseDict[name]=phase.getData()
+                   
+                    if phase._naxes is not 2:
                         log.error("phasespace len is not 2 : %s"%name)
                         
-                    dict_axes=self.phaseDict[name].get()
-                    my_extent=[dict_axes[phase_axes[0]][0],dict_axes[phase_axes[0]][-1],dict_axes[phase_axes[1]][0],dict_axes[phase_axes[1]][-1]]
-                    
+                        
+                    my_extent=[phase._axes[0]['min'],phase._axes[0]['max'],phase._axes[1]['min'],phase._axes[1]['max']]
                     
                     ax=self.fig.add_subplot(self.nplots,1,plot+1)
                     ax.xaxis.grid(True)
@@ -348,7 +348,7 @@ class smileiQtPlot(QWidget):
                     
                     im=ax.imshow([[0]],extent=my_extent,aspect='auto',origin='lower')
                     im.set_interpolation('nearest')
-                    cb=plt.colorbar(im, cax=cax)
+                    cb=self.fig.colorbar(im, cax=cax, ax=ax)
 
                     self.ax[name]=ax
                     plot+=1
@@ -481,7 +481,7 @@ class smileiQtPlot(QWidget):
 
                     
         for name in self.phaseDict:
-            data=self.phaseDict[name].getData()[self.step].T
+            data=self.phaseDict[name][self.step].T
             im=self.ax[name].images[-1]
             im.set_data(data)
             if self.ui.autoScale.isChecked():
