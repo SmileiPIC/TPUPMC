@@ -1,4 +1,6 @@
 # TPUPMC
 
-git clone git@github.com:iltommi/TPUPMC.git
+Build Status: [![Build Status](https://travis-ci.org/iltommi/TPUPMC.svg?branch=master)](https://travis-ci.org/iltommi/TPUPMC)
+
+
 
