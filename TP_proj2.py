@@ -1,6 +1,5 @@
-# ---------------------------------------------
 # SIMULATION TP_proj2.py
-# ---------------------------------------------
+
 my_every=20
 npart=10
 velocity=0.02
@@ -60,7 +59,7 @@ Species(
 DiagScalar (
  	precision = 3,
  	every=my_every,
-	vars = ['Utot', 'Ukin', 'Uelm', 'Ukin_eon1', 'Ukin_eon2', 'Ntot_eon1', 'Ntot_eon2', 'Uelm_Ex']
+	vars = ['Utot', 'Ukin', 'Uelm', 'Ukin_eon1', 'Ukin_eon2', 'Uelm_Ex']
 )
  
 DiagParticles(
