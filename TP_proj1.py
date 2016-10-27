@@ -1,5 +1,3 @@
-# SIMULATION TP_proj1.py
-
 my_every=10
 npart=10
 

@@ -1,5 +1,3 @@
-# SIMULATION TP_proj2.py
-
 my_every=20
 npart=10
 velocity=0.02

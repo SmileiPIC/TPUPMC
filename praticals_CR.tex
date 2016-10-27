@@ -21,20 +21,42 @@
 
 \usepackage[top=50pt,bottom=50pt,left=50pt,right=50pt]{geometry}
 
-\usepackage{listings}
+\usepackage{filecontents,listings}
+
+ 
+\makeatletter
+\def\lst@MSkipToFirst{%
+    \global\advance\lst@lineno\@ne
+    \ifnum \lst@lineno=\lst@firstline
+        \def\lst@next{\lst@LeaveMode \global\lst@newlines\z@
+        \lst@OnceAtEOL \global\let\lst@OnceAtEOL\@empty
+        \lst@InitLstNumber % Added to work with modified \lsthk@PreInit.
+        \lsthk@InitVarsBOL
+        \c@lstnumber=\numexpr-1+\lst@lineno % this enforces the displayed line numbers to always be the input line numbers
+        \lst@BOLGobble}%
+        \expandafter\lst@next
+    \fi}
+\makeatother
+\let\oldlstinputlisting\lstinputlisting
+\renewcommand{\lstinputlisting}[2][]{%
+    \oldlstinputlisting[caption={\texttt{\detokenize{#2}}},#1]{#2}%
+}
+
 \usepackage{color}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
 
 \lstset{ %
+  backgroundcolor=\color{backcolour},   
   basicstyle=\linespread{0.85}\ttfamily\footnotesize,        % the size of the fonts that are used for the code
   breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
   breaklines=true,                 % sets automatic line breaking
   captionpos=b,                    % sets the caption-position to bottom
   commentstyle=\color{mygreen},    % comment style
-  deletekeywords={...},            % if you want to delete keywords from the given language
   escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
   extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
   keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
@@ -51,6 +73,10 @@
   stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
   stringstyle=\color{mymauve},     % string literal style
   tabsize=2,	                   % sets default tabsize to 2 spaces
+  morekeywords={Main,Species,DiagScalar,DiagParticles,DiagFields},
+  keywordstyle=\color{magenta},
+  keywords=[2]{time_frozen, sim_length, sim_time, nb_density,cell_length,xnumber},
+  keywordstyle=[2]\color{red}
 }
 
 % NEW COMMAND
@@ -201,7 +227,7 @@ The code input file for this simulation are available in \texttt{TP\_proj1.py} a
 Here, we just reproduce the sections (Python classes) relating to the definition of the species an their density profiles. 
 
 First, the ions are defined as a neutralizing back ground and will not move during the simulation (i.e. their mass can be considered as infinite: \texttt{time\_frozen > sim\_time}):
-\lstinputlisting[language=Python,linerange=18-29,numbers=none]{TP_proj1.py}
+\lstinputlisting[linerange=16-27]{TP_proj1.py}
 
 Now, for electrons, we apply a small perturbation on their density (\texttt{nb\_density}), and will investigate what is the plasma response to such a perturbation.
 Here, we consider a periodic (cosine) perturbation of the (normalized) electron density:
@@ -212,7 +238,7 @@ where $k$ is the mode of the parturbation and $\delta n$ its amplitude.
 In the simulation, what we actually fix are the simulation length $L_{\rm sim}$ (\texttt{sim\_length}) and the number of modes (see below) $N$ so that $k=2\pi\,N/L_{\rm sim}$.
 
 Which translates in the code below ($N$=\texttt{xnumber}):
-\lstinputlisting[linerange=31-41,numbers=none]{TP_proj1.py}
+\lstinputlisting[linerange={29-39}]{TP_proj1.py}
 
 
 \subsection*{Exercise 2: Simulation of electron-plasma oscillations}
@@ -223,7 +249,7 @@ Which translates in the code below ($N$=\texttt{xnumber}):
 {\bf (2.4)} Run the PIC simulation with input file \texttt{TP\_proj1.py}. To do so write in the \texttt{smilei} directory the command 
 \texttt{smilei.sh TPUPMC/TP\_proj1.py}. In the window that appears select diagnostics and choose \texttt{Uelm}, \texttt{Ex}, \texttt{Rho\_eon}, \texttt{jx}, and the phase space diagnostic:
 
-\lstinputlisting[linerange=49-57,numbers=none]{TP_proj1.py}
+\lstinputlisting[linerange=47-55]{TP_proj1.py}
 
 Where \texttt{first} and \texttt{second} refers to the first and second axis of the phase-space (in this case x-px, thus first refers to space coordinate, and second to momentum coordinate) . Both are a 3-component lists of the kind \texttt{[min,max,num]} giving a \texttt{num} equal binning between \texttt{min} and \texttt{max}. Typically the normalized momentum will be same order of magnitude of the normalized density fluctuations (the quantity  \texttt{amplitude} in \texttt{nb\_density}).
 
@@ -326,7 +352,7 @@ n_e(t=0,x) = n_e^+(x) + n_e^-(x)\,,
 \end{eqnarray}
 where:
 \begin{eqnarray}\label{eq_2stream2}
-n_e^+(t=0,x) = n_e^-(t=0,x) = \frac{n_{e0}}{2}\,[1 + \delta n\,\cos(k\,x)]\,.
+n_e^+(t=0,x) = n_e^-(t=0,x) = \frac{n_{e0}}{2}\,\left[1 + \delta n\,\cos(k\,x)\right]\,.
 \end{eqnarray}
 
 \begin{wrapfigure}[15]{r}{0.4\textwidth}
