@@ -82,7 +82,7 @@
 \hrule
 \section*{Summary}
 These exercises are intended as an introduction to plasma physics through Particle-in-cell (PIC) simulation.
-We first give some details on the open-source PIC code SMILEI (\url{http://www.maisondelasimulation.fr/smilei}) currently developed at LULI in collaboration with various laboratories.
+We first give some details on the open-source PIC code SMILEI\footnote{\url{http://www.maisondelasimulation.fr/smilei}} currently developed at LULI in collaboration with various laboratories.
 
 We propose two projects: 
 \begin{enumerate}
@@ -141,8 +141,13 @@ where we have explicitly written the Lorentz force acting on the $j^{th}$ partic
 
 The fluid equations studied in the course can be deduced by the kinetic description, and are thus contained in the kinetic description 
 in the limit where kinetic effects are not dominant, and the particle distribution function can be described as a local Maxwellian. 
-The connection between the kinetic description and the fluid description is given by \\$n_s= \int f_s d^3p$; $\vu_s =
-\int \vv f_s d^3p$; $k_B T_s =\int \frac{p^2}{2m_s}  f_s d^3p$
+
+The connection between the kinetic description and the fluid description is given by 
+\begin{eqnarray*}
+n_s= \int f_s d^3p \\
+vu_s =\int \vv f_s d^3p \\
+k_B T_s =\int \frac{p^2}{2m_s}  f_s d^3p
+\end{eqnarray*}
 
 We remind their form here, for  $s=i,e$ :
 
@@ -225,7 +230,6 @@ Where \texttt{first} and \texttt{second} refers to the first and second axis of 
 This will allow you to visualise the electrostatic field energy averaged over space as a function of time,  the electric field, the electron density and the electron current as a function of space and the momentum and position of the particles in the code (phase space) by clicking on \texttt{plot}. How is perturbed electron current $j_{1,x}$ related to the variable $u_{e1,x}(t,x)$? 
 
 Notice that we are exciting a stationary wave. \\
-
 {\bf (2.5)} From the simulations, deduce the explicit form of $n_{1,e}(x,t)$ (i.e. by considering equation (8) and the simulation results deduce the actual value of the arbitrary  phase introduced in section (2.1)) and discuss the wave evolution in time. What is the characteristic time for the electric field oscillations (in normalized as well as physical units)? What about density oscillations? What is the relative phase between the electric field and density oscillations?  Are results consistent with theoretical predictions from exercise (2.1) and (2.2)?\\
 {\bf (2.6)} Compute analytically the time evolution of the total electrostatic field energy (variable  \texttt{Uelm} in the code):
 $$U_{\rm es}(t) = \int_{0}^{L_{\rm sim}} dx E_x^2(t,x)/2$$
@@ -295,7 +299,7 @@ You can use the table to note your results. Plot the oscillation frequency as a 
 
 \subsection*{Kinetic (wave-breaking) effects}
 
-We will now investigate the changes brought by taking a large amplitude for the initial density perturbation ($\delta n \lesssim 1$). To do so, it is necessary to take sufficiently small time-step and cell-length (take care to fulfil the CFL condition in your choice of parameters, e.g. by using $\Delta x = 2\,\Delta t $).
+We will now investigate the changes brought by taking a large amplitude for the initial density perturbation ($\delta~n~\lesssim~1$). To do so, it is necessary to take sufficiently small time-step and cell-length (take care to fulfil the CFL condition in your choice of parameters, e.g. by using $\Delta x = 2\,\Delta t $).
 
 \subsection*{Exercise 5: Kinetic effects for large amplitude plasma oscillations}
 
@@ -332,7 +336,6 @@ n_e^+(t=0,x) = n_e^-(t=0,x) = \frac{n_{e0}}{2}\,[1 + \delta n\,\cos(k\,x)]\,.
 \label{Fig_2stream.pdf}
 \caption{Two stream instability}
 \label{Fig_2stream}
-\vspace*{1000pt}
 \end{wrapfigure}
 
 Here, $\delta n = 10^{-2}$ is the amplitude of the perturbation and $k$ its mode.
@@ -354,24 +357,27 @@ Note that here, $\omega_{p0}$ denotes the plasma frequency at the total (backgro
 
 \subsection*{Exercise 6: Dispersion relation, characteristic frequencies and growth rate: Theory}
 
-%\begin{floatingfigure}[r]{0.4\linewidth}
-%\includegraphics[width=0.4\linewidth]{Fig_2stream.pdf}
-%\caption{Two stream instability}
-%\label{Fig_2stream}
-%\end{floatingfigure}
-
 {\bf (6.1)} For a given value of $v_0 k$, show that Eq.~\eqref{eq_disprel_2stream} is equivalent to the biquadratic equation on $\omega$:
 \begin{eqnarray}\label{eq_biquad}
-\omega^4 - (1+2 v_0^2 k^2)\,\omega^2 + v_0^2 k^2\,(v_0^2 k^2-1) = 0\,\,.
+\omega^4 - \left[1+2 (v_0 k)^2\right]\,\omega^2 + (v_0 k)^2\,\left[(v_0 k)^2-1\right] = 0\,\,.
 \end{eqnarray}
 {\bf (6.2)} Solve Eq.~\eqref{eq_biquad} to obtain:
 \begin{eqnarray}
-\omega^2 = \frac{1}{2}\,\left[ (1+2 v_0^2 k^2) \pm \sqrt{1+8 v_0^2 k^2} \right]
+\omega^2 = \frac{1}{2}\,\left[ \left(1+2 (v_0 k)^2\right) \pm \sqrt{1+8 (v_0 k)^2} \right]
 \end{eqnarray}
 Show that it admits imaginary solution for $v_0 k<1$. To what does this imaginary solution correspond to?\\
 {\bf (6.3)} Plot, as a function of $v_0 k$ (e.g. in the range $0 - 5$),  the solution for $\omega$ (use dashed lines for the imaginary solution). [For the current exercise, you can directly use the plot given in Figure~\ref{Fig_2stream}]\\
-{\bf (6.4)} Considering that the dispersion relation is obtained assuming all perturbed quantities vary as $\exp[i(\omega t - k\,x)]$, show that, for $v_0 k>1$, the energy in the electrostatic field varies as $A + B\,\cos(2\,\omega_a\,t) + C\,\cos(2\,\omega_b\,t) + D\,\cos[(\omega_a-\omega_b)\,t] + E\,\cos[(\omega_a+\omega_b)\,t]$, with $A$, $B$, $C$, $D$ and $E$ some numerical constants. What do $\omega_a$ and $\omega_b$ stand for?\\
-{\bf (6.5)} Similarly, show that, for $v_0 k<1$, the energy in the electrostatic field goes as $A + B\,\cos(2\omega t) + C\,\cos(\omega t)\,\exp(\gamma t)+D\,\exp(2\gamma t)$. What do $\omega$ and $\gamma$ stand for? 
+{\bf (6.4)} Considering that the dispersion relation is obtained assuming all perturbed quantities vary as $\mathrm{e}^{i(\omega t - k\,x)}$, show that, for $v_0 k>1$, the energy in the electrostatic field varies as 
+\begin{equation*}
+A + B\,\cos(2\,\omega_a\,t) + C\,\cos(2\,\omega_b\,t) + D\,\cos\left[(\omega_a-\omega_b)\,t\right] + E\,\cos\left[(\omega_a+\omega_b)\,t\right]
+\end{equation*}
+ with $A$, $B$, $C$, $D$ and $E$ some numerical constants. What do $\omega_a$ and $\omega_b$ stand for?\\
+{\bf (6.5)} Similarly, show that, for $v_0 k<1$, the energy in the electrostatic field goes as  
+\begin{equation*}
+A + B\,\cos(2\omega t) + C\,\cos(\omega t)\,\mathrm{e}^{\gamma t}+D\,\mathrm{e}^{2\gamma t}
+\end{equation*}
+
+What do $\omega$ and $\gamma$ stand for? 
 
 %\begin{figure}[h!]
 %\centering\includegraphics[width=0.5\textwidth]{Fig_2stream.pdf}

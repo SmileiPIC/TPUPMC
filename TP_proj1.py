@@ -16,44 +16,44 @@ Main(
 )
 
 Species(
-	species_type = 'ion',
+    species_type = 'ion',
     nb_density = 1.0,
-	initPosition_type = 'regular',
-	initMomentum_type = 'cold',
-	n_part_per_cell = npart,
-	mass = 1836.0,
-	charge = 1.0,
-	time_frozen = 10000.0,
-	bc_part_type_west = 'none',
-	bc_part_type_east = 'none'
+    initPosition_type = 'regular',
+    initMomentum_type = 'cold',
+    n_part_per_cell = npart,
+    mass = 1836.0,
+    charge = 1.0,
+    time_frozen = 10000.0,
+    bc_part_type_xmin = 'none',
+    bc_part_type_xmax = 'none'
 )
 
 Species(
-	species_type = "eon",
-	initPosition_type = "regular",
-	initMomentum_type = "cold",
-	n_part_per_cell = npart,
-	mass = 1.0,
-	charge = -1.0,
-	nb_density = cosine(1,xamplitude=0.1,xnumber=1),
-	bc_part_type_west = "none",
-	bc_part_type_east = "none"
+    species_type = "eon",
+    initPosition_type = "regular",
+    initMomentum_type = "cold",
+    n_part_per_cell = npart,
+    mass = 1.0,
+    charge = -1.0,
+    nb_density = cosine(1,xamplitude=0.1,xnumber=1),
+    bc_part_type_xmin = "none",
+    bc_part_type_xmax = "none"
 )
 
 DiagScalar (
- 	precision = 3,
-	every = my_every,
-	vars = ['Utot', 'Ukin', 'Uelm', 'Ukin_eon', 'Ntot_eon', 'Uelm_Ex']
+    precision = 3,
+    every = my_every,
+    vars = ['Utot', 'Ukin', 'Uelm', 'Ukin_eon', 'Ntot_eon', 'Uelm_Ex']
 ) 
  
 DiagParticles(
-	output = "density",
-	every = my_every,
-	species = ["eon"],
-	axes = [
-		["x", 0., 1., 100],
-		["px", -0.04, 0.04, 100]
-	]
+    output = "density",
+    every = my_every,
+    species = ["eon"],
+    axes = [
+        ["x", 0., 1., 100],
+        ["px", -0.04, 0.04, 100]
+    ]
 )
 
 DiagFields(

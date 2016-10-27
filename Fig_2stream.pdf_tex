@@ -56,8 +56,8 @@
     \put(0.51831438,0.00052816){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{2}}}%
     \put(0.98047629,0.0010199){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{4}}}%
     \put(0.46054904,-0.23651441){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.69376184\unitlength}\raggedright \end{minipage}}}%
-    \put(0.85710984,0.08425723){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{$v_0 k$}}}%
-    \put(0.06517937,0.58779405){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\omega$}}}%
+    \put(0.9590083,0.08425723){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$v_0 k$}}}%
+    \put(0.08009898,0.58779405){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\omega$}}}%
     \put(0.01985153,0.04208513){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{0}}}%
     \put(0.01917767,0.19032143){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{1}}}%
     \put(0.01997902,0.48690331){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{3}}}%
