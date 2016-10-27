@@ -10,13 +10,13 @@
 \usepackage{bm}           %  bold math
 \usepackage{color}        %  textcolor
 \usepackage{ulem}        %  sout (strike out)
-%\usepackage{wrapfig}
 %tommaso
 \usepackage{tabularx}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
 \usepackage{times}
-\usepackage{floatflt}
+%\usepackage{floatflt}
+\usepackage{wrapfig}
 \renewcommand{\abstractname}{Summary}
 
 \usepackage[top=50pt,bottom=50pt,left=50pt,right=50pt]{geometry}
@@ -324,6 +324,15 @@ where:
 \begin{eqnarray}\label{eq_2stream2}
 n_e^+(t=0,x) = n_e^-(t=0,x) = \frac{n_{e0}}{2}\,[1 + \delta n\,\cos(k\,x)]\,.
 \end{eqnarray}
+
+\begin{wrapfigure}[15]{r}{0.4\textwidth}
+\includegraphics[width=\linewidth]{Fig_2stream.pdf}
+\label{Fig_2stream.pdf}
+\caption{Two stream instability}
+\label{Fig_2stream}
+\vspace*{1000pt}
+\end{wrapfigure}
+
 Here, $\delta n = 10^{-2}$ is the amplitude of the perturbation and $k$ its mode.
 As periodic conditions allow us for simulating an infinite plasma, and taking $n=1$ mode  (in the input file, see Proj.~1~\ref{proj1}), the wave-number $k$ is directly linked to the length of the simulation box by:
 \begin{eqnarray}\label{eq_k}
@@ -338,22 +347,16 @@ Now, we recall the dispersion relation for such a system. In normalized units, i
 where $k$ is in unit of $\omega_{p0}/c$ and $\omega$ is in units of $\omega_{p0}$.
 
 
-%\begin{wrapfigure}[10]{r}{0.3\textwidth}
-%\centering\includegraphics[height=10\baselineskip,width=0.3\textwidth]{Fig_2stream.png}
-%\caption{Two stream instability}
-%\label{Fig_2stream}
-%\end{wrapfigure}
-
 Note that here, $\omega_{p0}$ denotes the plasma frequency at the total (background) electron density $n_0$, while the beam (half-density) $n_0/2 = \langle n_e^{\pm}(t=0) \rangle$ was used in the lecture.
 
 
 \subsection*{Exercise 6: Dispersion relation, characteristic frequencies and growth rate: Theory}
 
-\begin{floatingfigure}[r]{0.4\linewidth}
-\includegraphics[width=0.4\linewidth]{Fig_2stream.pdf}
-\caption{Two stream instability}
-\label{Fig_2stream}
-\end{floatingfigure}
+%\begin{floatingfigure}[r]{0.4\linewidth}
+%\includegraphics[width=0.4\linewidth]{Fig_2stream.pdf}
+%\caption{Two stream instability}
+%\label{Fig_2stream}
+%\end{floatingfigure}
 
 {\bf (6.1)} For a given value of $v_0 k$, show that Eq.~\eqref{eq_disprel_2stream} is equivalent to the biquadratic equation on $\omega$:
 \begin{eqnarray}\label{eq_biquad}
