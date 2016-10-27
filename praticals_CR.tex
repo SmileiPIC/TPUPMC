@@ -10,13 +10,14 @@
 \usepackage{bm}           %  bold math
 \usepackage{color}        %  textcolor
 \usepackage{ulem}        %  sout (strike out)
-
-\renewcommand{\abstractname}{Summary}
+%\usepackage{wrapfig}
 %tommaso
 \usepackage{tabularx}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
 \usepackage{times}
+\usepackage{floatflt}
+\renewcommand{\abstractname}{Summary}
 
 \usepackage[top=50pt,bottom=50pt,left=50pt,right=50pt]{geometry}
 
@@ -68,7 +69,7 @@
 %-------
 % Title
 %-------
-\title{TP - UPMC \\ Introduction to Plasma Physics with Particle-In-Cell Simulation}
+\title{TP - UPMC \\ Introduction to plasma physics with Particle-In-Cell simulations}
 
 
 \author{Caterina~Riconda \footnote{\url{caterina.riconda@upmc.fr}}, \and Tommaso Vinci \footnote{\url{tommaso.vinci@polytechnique.edu}}, \and Mickael~Grech \footnote{\url{mickael.grech@polytechnique.edu}} }
@@ -195,7 +196,7 @@ The code input file for this simulation are available in \texttt{TP\_proj1.py} a
 Here, we just reproduce the sections (Python classes) relating to the definition of the species an their density profiles. 
 
 First, the ions are defined as a neutralizing back ground and will not move during the simulation (i.e. their mass can be considered as infinite: \texttt{time\_frozen > sim\_time}):
-\lstinputlisting[linerange=18-29,numbers=none]{TP_proj1.py}
+\lstinputlisting[language=Python,linerange=18-29,numbers=none]{TP_proj1.py}
 
 Now, for electrons, we apply a small perturbation on their density (\texttt{nb\_density}), and will investigate what is the plasma response to such a perturbation.
 Here, we consider a periodic (cosine) perturbation of the (normalized) electron density:
@@ -259,7 +260,7 @@ As discussed above, the choice of the time interval can affect the precision and
 \noindent {\bf (3.4)} Make a plot of the oscillation frequency of the plasma wave as a function of $\Delta t$, and discuss the result. \\
 
 
-\begin{tabularx}{\textwidth}{X|X|X|X|X}
+\begin{tabularx}{0.95\textwidth}{X|X|X|X|X}
 \centering\large\textbf{$\Delta t$} & \centering\large\textbf{$\tau_{E,n}$} & \centering\large\textbf{$\tau_{P,n}$} &  \centering\large\textbf{$\omega_{E,n}$} & \centering\arraybackslash\large\textbf{$\omega_{P,n}$} \\
 \hline
  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ 
@@ -273,7 +274,7 @@ In this exercise we will fix $\Delta t = 0.01$, the plasma size to $1.$, the cel
  in the \texttt{DiagPhase} take the second value of   \texttt{first} = 1. (maximum value for the position/plasma length), and for \texttt{second}[ -0.02, 0.02,100] (extremes values for the momentum). 
 Vary the wave vector $k$ by varying the quantity \texttt{xnumber} in \texttt{nb\_density}, since the  
  wave-number $k$ is defined as :
-\begin{eqnarray}\label{eq_k}
+\begin{eqnarray}\label{eq_k1}
 k = {\rm xnumber} \frac{2\pi}{\rm sim\_length}\,.
 \end{eqnarray}
 
@@ -285,7 +286,7 @@ k = {\rm xnumber} \frac{2\pi}{\rm sim\_length}\,.
 You can use the table to note your results. Plot the oscillation frequency as a function of the wave vector. Comment the plot. \\
 
 
-\begin{tabularx}{\textwidth}{X|X|X|X|X}
+\begin{tabularx}{0.95\textwidth}{X|X|X|X|X}
 \centering\large\textbf{$k$} & \centering\large\textbf{$\tau_{E,n}$} & \centering\large\textbf{$\tau_{P,n}$} &  \centering\large\textbf{$\omega_{E,n}$} & \centering\arraybackslash\large\textbf{$\omega_{P,n}$} \\
 \hline
  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ 
@@ -300,16 +301,16 @@ We will now investigate the changes brought by taking a large amplitude for the 
 
 \noindent{\bf (5.1)}  In the conditions of exercise 2, (e.g. length 1., cell size 0.02, time step 0.01 and $\delta n = 0.01$) plot the electron phase-space ($x,p_x$). Does this bring any additional information as compared to the fluid description? Justify your answer.\\
 {\bf (5.2)} Now, increase the amplitude of the density perturbation to $\delta n = 0.5$ and reduce the time step to $\Delta t =  10^{-3}$ and the cell size accordingly. Check  the electron phase-space ($x,p_x$). (Note that you may have to increase the minimum and maximum value of the momentum when defining the phase-space diagnostics in the input file, parameters 'mom\_min' and 'mom\_max'.) Discuss what you observed: does the kinetic description brings more information that the linearized fluid approach? What about the temporal evolution of the electrostatic field energy?\\
-{\bf (5.3)} Now increase $\delta n$ to 0.9. Check the  electron phase-space ($x,p_x$) and the temporal evolution of the electrostatic field energy and of the particles kinetic energy. How does it differ from what was observed in the limit $\delta n \ll 1$ (exercise 2)? Can you explain such differences? What about the phase-space?Does this bring any additional information as compared to the fluid description? Justify your answer.\\
+{\bf (5.3)} Now increase $\delta n$ to 0.9. Check the  electron phase-space ($x,p_x$) and the temporal evolution of the electrostatic field energy and of the particles kinetic energy. How does it differ from what was observed in the limit $\delta n \ll 1$ (exercise 2)? Can you explain such differences? What about the phase-space? Does this bring any additional information as compared to the fluid description? Justify your answer.\\
 
 
-\newpage
 %%%%%%%%%%%%%%%%%%
 %        Project 2            %
 %%%%%%%%%%%%%%%%%%
 \section*{Project 2: Two-stream instability}\label{proj2}
 
 \subsection*{Initial set-up and theory}
+
 
 This second project aims at illustrating the so-called two-stream instability.
 To do so, we consider a 1D infinite plasma with averaged constant density $n_{e0} = 1$. 
@@ -329,20 +330,30 @@ As periodic conditions allow us for simulating an infinite plasma, and taking $n
 k = \frac{2\pi}{\rm sim\_length}\,.
 \end{eqnarray}
 
+
 Now, we recall the dispersion relation for such a system. In normalized units, it reads:
 \begin{eqnarray}\label{eq_disprel_2stream}
 \frac{1}{(\omega - k\,v_0)^2} + \frac{1}{(\omega + k\,v_0)^2} = 2\,,
 \end{eqnarray}
 where $k$ is in unit of $\omega_{p0}/c$ and $\omega$ is in units of $\omega_{p0}$.
+
+
+%\begin{wrapfigure}[10]{r}{0.3\textwidth}
+%\centering\includegraphics[height=10\baselineskip,width=0.3\textwidth]{Fig_2stream.png}
+%\caption{Two stream instability}
+%\label{Fig_2stream}
+%\end{wrapfigure}
+
 Note that here, $\omega_{p0}$ denotes the plasma frequency at the total (background) electron density $n_0$, while the beam (half-density) $n_0/2 = \langle n_e^{\pm}(t=0) \rangle$ was used in the lecture.
 
-\begin{figure}
-\centering\includegraphics[width=0.7\textwidth]{Fig_2stream.png}
-\caption{two stream instability}
-\label{Fig_2stream}
-\end{figure}
 
 \subsection*{Exercise 6: Dispersion relation, characteristic frequencies and growth rate: Theory}
+
+\begin{floatingfigure}[r]{0.4\linewidth}
+\includegraphics[width=0.4\linewidth]{Fig_2stream.pdf}
+\caption{Two stream instability}
+\label{Fig_2stream}
+\end{floatingfigure}
 
 {\bf (6.1)} For a given value of $v_0 k$, show that Eq.~\eqref{eq_disprel_2stream} is equivalent to the biquadratic equation on $\omega$:
 \begin{eqnarray}\label{eq_biquad}
@@ -353,9 +364,16 @@ Note that here, $\omega_{p0}$ denotes the plasma frequency at the total (backgro
 \omega^2 = \frac{1}{2}\,\left[ (1+2 v_0^2 k^2) \pm \sqrt{1+8 v_0^2 k^2} \right]
 \end{eqnarray}
 Show that it admits imaginary solution for $v_0 k<1$. To what does this imaginary solution correspond to?\\
-{\bf (6.3)} Plot, as a function of $v_0 k$ (e.g. in the range $0 - 5$),  the solution for $\omega$ (use dashed lines for the imaginary solution). [For the current exercise, you can directly use the plot given in Fig.~\ref{Fig_2stream}]\\
+{\bf (6.3)} Plot, as a function of $v_0 k$ (e.g. in the range $0 - 5$),  the solution for $\omega$ (use dashed lines for the imaginary solution). [For the current exercise, you can directly use the plot given in Figure~\ref{Fig_2stream}]\\
 {\bf (6.4)} Considering that the dispersion relation is obtained assuming all perturbed quantities vary as $\exp[i(\omega t - k\,x)]$, show that, for $v_0 k>1$, the energy in the electrostatic field varies as $A + B\,\cos(2\,\omega_a\,t) + C\,\cos(2\,\omega_b\,t) + D\,\cos[(\omega_a-\omega_b)\,t] + E\,\cos[(\omega_a+\omega_b)\,t]$, with $A$, $B$, $C$, $D$ and $E$ some numerical constants. What do $\omega_a$ and $\omega_b$ stand for?\\
 {\bf (6.5)} Similarly, show that, for $v_0 k<1$, the energy in the electrostatic field goes as $A + B\,\cos(2\omega t) + C\,\cos(\omega t)\,\exp(\gamma t)+D\,\exp(2\gamma t)$. What do $\omega$ and $\gamma$ stand for? 
+
+%\begin{figure}[h!]
+%\centering\includegraphics[width=0.5\textwidth]{Fig_2stream.pdf}
+%\caption{Two stream instability}
+%\label{Fig_2stream}
+%\end{figure}
+
 
 \subsection*{Numerical simulation of the 2-stream instability}
 
@@ -386,10 +404,6 @@ The input file to start these simulation is given \texttt{TP\_proj2.py}.
 
 
 
-\section*{SMILEI namelists}
-\lstinputlisting{TP_proj1.py}
-\lstinputlisting{TP_proj2.py}
-
 \begin{thebibliography}{2}
 
 \bibitem{birdsall_langdon} C.~K.~Birdsall and A.~B.~Langdon, {\it Plasma physics via computer simulation}, McGraw-Hill, New York (1985).
@@ -398,8 +412,15 @@ The input file to start these simulation is given \texttt{TP\_proj2.py}.
 
 
 \end{thebibliography}
+\newpage
+\section*{SMILEI namelists}
+\lstinputlisting{TP_proj1.py}
+\lstinputlisting{TP_proj2.py}
+
 
 These notes are available at: \url{https://github.com/iltommi/TPUPMC}
+
+The smilei code can be downloaded from \url{https://github.com/SmileiPIC/Smilei}
 
 \end{document}
 
