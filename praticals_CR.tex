@@ -29,6 +29,7 @@
 
 \renewcommand\ExerciseListHeader{%
     \bfseries\large\ExerciseListName\ExerciseHeaderNB : \ExerciseHeaderTitle\ExerciseHeaderOrigin%
+\addcontentsline{toc}{subsection}{\ExerciseListName\ExerciseHeaderNB : \ExerciseHeaderTitle\ExerciseHeaderOrigin}
 }
 
 
@@ -50,10 +51,10 @@
         \expandafter\lst@next
     \fi}
 \makeatother
-\let\oldlstinputlisting\lstinputlisting
-\renewcommand{\lstinputlisting}[2][]{%
-    \oldlstinputlisting[caption={\texttt{\detokenize{#2}}},#1]{#2}%
-}
+%\let\oldlstinputlisting\lstinputlisting
+%\renewcommand{\lstinputlisting}[2][]{%
+%\oldlstinputlisting[caption={file \texttt{\detokenize{#2}}},#1]{#2}%
+%}
 
 
 \usepackage{color}
@@ -119,39 +120,58 @@
 \let\@fnsymbol\@arabic
 \makeatother
 
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\@maketitle}{\LARGE \@title}{\fontsize{26}{19.2}\selectfont\@title}{}{}
+\makeatother
+
+\renewcommand{\contentsname}{Summary}
+
+
 \begin{document}
 %-------
 % Title
 %-------
-\title{TP - UPMC \\ Introduction to plasma physics with Particle-In-Cell simulations\footnote{These notes are available at: \url{https://github.com/iltommi/TPUPMC}}}
+\title{UPMC - TP plasma \\ \vspace{10pt} Introduction to plasma physics \\ \vspace{10pt} with Particle-In-Cell simulations}
 
 
-\author{Caterina~Riconda \thanks{\url{caterina.riconda@upmc.fr}}, \and Tommaso Vinci \thanks{\url{tommaso.vinci@polytechnique.edu}}, \and Mickael~Grech \thanks{\url{mickael.grech@polytechnique.edu}} }
+\author{Caterina~Riconda \\ {\tiny\url{caterina.riconda@upmc.fr}} \and Tommaso Vinci \\ {\tiny\url{tommaso.vinci@polytechnique.edu}} \and Mickael~Grech \\ {\tiny\url{mickael.grech@polytechnique.edu}}}
 
 \date{}
 
 \maketitle              
 
-\vspace*{-20pt}
 \hrule
-\section*{Summary}
-These exercises are intended as an introduction to plasma physics through Particle-in-cell (PIC) simulation.
-We first give some details on the open-source PIC code SMILEI\footnote{homepage: \url{http://www.maisondelasimulation.fr/smilei}}\footnote{download: \url{https://github.com/SmileiPIC/Smilei}} currently developed at LULI in collaboration with various laboratories.
+\vspace*{20pt}
 
-We propose two projects: 
-\begin{enumerate}
-\item electron plasma waves.
-\item two-stream instability.
-\end{enumerate}
+These exercises are  intended as an introduction to plasma physics through Particle-in-cell (PIC) simulation.
+
+The code used is called SMILEI and is currently developed at LULI in collaboration with various laboratories 
+
+\subsection*{Links:}
+\begin{tabularx}{0.95\textwidth}{rl}
+These notes: & \url{https://github.com/iltommi/TPUPMC} \\
+Code homepage: & \url{http://www.maisondelasimulation.fr/smilei}\\
+Code download: &\url{https://github.com/SmileiPIC/Smilei}
+\end{tabularx}
 
 
-%\tableofcontents
+\vspace{20pt}
+
+
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{smileiLogo.pdf}
+%\end{center}
+
+\tableofcontents
 
 
 %%%%%%%%%%%%%%%%%%
 %  INTRODUCTION  %
 %%%%%%%%%%%%%%%%%%
+\newpage
 \section*{Introduction}\label{intro}
+\addcontentsline{toc}{section}{Introduction}
 
 \subsection*{The Particle-In-Cell code SMILEI}
 
@@ -159,14 +179,12 @@ SMILEI is a Particle-In-Cell (PIC) code initially developed to study laser-plasm
 The PIC method aims at solving the Maxwell-Vlasov system of  equations~\cite{birdsall_langdon}.
 
 The electromagnetic fields ($\vE,\vB$) are described on a (here cartesian) grid, and Maxwell's equations:
-\begin{subequations}\label{eq_Maxwell}
-\begin{eqnarray}
-\nabla \cdot \vE &=& \frac{\rho}{\epsilon_0} \,,\\
+\begin{eqnarray}\label{eq_Maxwell}
+\nabla \cdot \vE &=& \frac{\rho}{\epsilon_0} \,, \nonumber \\
 \nabla \cdot \vB &=& 0 \,,\\
-\nabla \times \vE &=& -\partial_t \vB \,,\\
-\nabla \times \vB &=& \mu_0\, \vJ + \mu_0 \epsilon_0\,\partial_t \vE \,,
+\nabla \times \vE &=& -\partial_t \vB \,, \nonumber\\
+\nabla \times \vB &=& \mu_0\, \vJ + \mu_0 \epsilon_0\,\partial_t \vE \,, \nonumber
 \end{eqnarray}
-\end{subequations}
 are solved using the finite-domain time-difference (FDTD) method~\cite{taflove_2005}.
 In Eqs.~\eqref{eq_Maxwell}, $\epsilon_0$ and $\mu_0$ are the vacuum permittivity and permeability, respectively. 
 As for $\rho$ and $\vJ$, they denote the total charge density and total current, respectively.
@@ -183,12 +201,10 @@ The PIC method consists in solving the Vlasov Eq.~\eqref{eq_Vlasov} by discretiz
 f_\alpha (t,\vx,\vv) = \sum_{j=1}^{N_s}\,\alpha_s^j\,\,S(\vx-\vx^j)\,\delta(\vv-\vv^j)\,,
 \end{eqnarray}
 where $\vx^j$ and $\vp^j$ are the position and momentum of the $j^{th}$ macro-particle, respectively, $\alpha^j$ is the so-called particle-weight, $S(\vx)$ is the so-called shape of the macro-particle [note that $S(\vx)$ is defined such that $S(-\vx)=S(\vx)$ and $\int d\vx\,S(\vx)=1$], and $\delta(\vp)$ is the Dirac-distribution. Introducing Eq.~\eqref{eq_macrop} in Vlasov Eq.~\eqref{eq_Vlasov} simplifies the problem to solving, for each macro-particle of each species, its relativistic equations of motion:
-\begin{subequations}
-\begin{eqnarray}
+\begin{eqnarray*}
 \frac{d\vx}{dt}  &=& \frac{\vp}{m_s \gamma}\,,\\
 \frac{d\vp}{dt}  &=&  q\,\left( \vE^j + \frac{\vp}{m_s \gamma} \times \vB^j \right)\,,
-\end{eqnarray}
-\end{subequations}
+\end{eqnarray*}
 where we have explicitly written the Lorentz force acting on the $j^{th}$ particle with charge $q$ and mass $m_s$, and $\vE^j$ and $\vB^j$ are the electric and magnetic fields seen by this particle, respectively.
 
 \subsection*{Fluid equations}
@@ -235,11 +251,12 @@ To proceed with our normalization, we now need to define a characteristic time. 
 %%%%%%%%%%%%%%%%%%
 %        Project 1            %
 %%%%%%%%%%%%%%%%%%
-\section*{Project 1: Electron plasma oscillations}\label{proj1}
+\newpage
+\section{Electron plasma oscillations}\label{proj1}
 
 This first project aims at illustrating a central mechanism of plasma physics, the so-called electron plasma oscillations.
 
-The code input file for this simulation are available in \texttt{TP\_proj1.py} and reproduced in annex of this document.
+The code input file for this simulation are available in the file \texttt{TPUPMC/TP\_proj1.py} and reproduced in annex of this document.
 Here, we just reproduce the sections relating to the definition of the main simulation parameters the species an their density profiles.
 
 \subsection*{Initial set-up}
@@ -346,9 +363,10 @@ As discussed above, the choice of the time interval can affect the precision and
     \ExeText{In this exercise we will fix $\Delta t = 0.01$, the plasma size to $1.$, the cell size to $0.02$, 
  in the \class{DiagPhase} take the second value of  the first component of \code{axes} = 1. (maximum value for the position/plasma length), and for the the second component of \code{axes} : \texttt{["px", -0.02, 0.02, 100]} (extremes values for the momentum). 
 Vary the wave vector $k$ by varying the quantity \param{xnumber} in \code{nb\_density}, since the  wave-number $k$ is defined as :
-\begin{eqnarray}\label{eq_k1}
+\begin{equation*}
 k = {\rm \param{xnumber}} \frac{2\pi}{\rm \code{sim\_length}}\,.
-\end{eqnarray}}
+\end{equation*}
+}
 
     \Question{Theoretically does the cold plasma oscillations frequency depend on the wave vector?}
     \Question{If we modify the wave vector without modifying the plasma size and the cell size (\code{cell\_length}), are we still resolving correctly one wavelength? (You can look at the code results to help you answer this question).}
@@ -381,23 +399,23 @@ We will now investigate the changes brought by taking a large amplitude for the 
 %%%%%%%%%%%%%%%%%%
 %        Project 2            %
 %%%%%%%%%%%%%%%%%%
-\section*{Project 2: Two-stream instability}\label{proj2}
+\newpage
+\section{Two-stream instability}\label{proj2}
 
 \subsection*{Initial set-up and theory}
-
 
 This second project aims at illustrating the so-called two-stream instability.
 To do so, we consider a 1D infinite plasma with averaged constant density $n_{e0} = 1$. 
 In SMILEI, this is simulated by considering periodic boundary conditions in the x-direction. 
 To create the two streams, we consider two electron species with initially opposite mean-velocities $v_{\pm} = \pm v_0$ (with $v_0 = 0.1$ in units of the light velocity) in the x-direction.
 Each species (labelled $+$ and $-$ depending on the direction of their mean-velocity) is then initialized such that:
-\begin{eqnarray}\label{eq_2stream1}
+\begin{eqnarray*}
 n_e(t=0,x) = n_e^+(x) + n_e^-(x)\,,
-\end{eqnarray}
+\end{eqnarray*}
 where:
-\begin{eqnarray}\label{eq_2stream2}
+\begin{eqnarray*}
 n_e^+(t=0,x) = n_e^-(t=0,x) = \frac{n_{e0}}{2}\,\left[1 + \delta n\,\cos(k\,x)\right]\,.
-\end{eqnarray}
+\end{eqnarray*}
 
 \begin{wrapfigure}[15]{r}{0.4\textwidth}
 \def\svgwidth{\linewidth}
@@ -459,7 +477,7 @@ What do $\omega$ and $\gamma$ stand for? }
 We will now perform numerical simulation using the PIC code SMILEI for different values of $v_0 k$.
 As discussed above, we take $v_0=10^{-1}$ which ensures that relativistic effects can be neglected.
 In addition, we use periodic boundary conditions, so that $k$ is uniquely defined by the simulation length using Eq.~\eqref{eq_k}.
-The input file to start these simulation is given \texttt{TP\_proj2.py}.
+The input file to start these simulation is given in the file \texttt{TPUPMC/TP\_proj2.py}.
 
 
 \begin{ExerciseList}
@@ -483,22 +501,32 @@ The input file to start these simulation is given \texttt{TP\_proj2.py}.
     \Question{Now, considering the phase-space distribution of the electron species, discuss what happens in the nonlinear phase of the instability.}
 \end{ExerciseList}
 
-%%%%%%%%%%%%%%%%
-%  REFERENCES  %
-%%%%%%%%%%%%%%%%
+\vspace{10pt}
+\hrule
 
-\section*{SMILEI namelists}
-\lstinputlisting{TP_proj1.py}
-\lstinputlisting{TP_proj2.py}
-
-
-
+\addcontentsline{toc}{section}{References}
 \begin{thebibliography}{2}
-
 \bibitem{birdsall_langdon} C.~K.~Birdsall and A.~B.~Langdon, {\it Plasma physics via computer simulation}, McGraw-Hill, New York (1985).
 \bibitem{taflove_2005} A.~Taflove and S.~C.~Hagness, {\it Computational Electrodynamics: The Finite-Difference Time-Domain Method}, 3rd~ed. Norwood, MA: Artech House (2005).
 \bibitem{boris_1970} J.~P.~Boris, {\it Relativistic plasma simulations - Optimization of a hybrid code}, Proc. 4th Conf. Num. Sim. of Plasmas {\bf 3}, 1970.
 \end{thebibliography}
+
+%%%%%%%%%%%%%%%%
+%  REFERENCES  %
+%%%%%%%%%%%%%%%%
+\newpage
+\section*{SMILEI namelists}
+\addcontentsline{toc}{section}{SMILEI namelists}
+
+\subsection*{\texttt{TP\_proj1.py}}
+\lstinputlisting{TP_proj1.py}
+
+\newpage
+\subsection*{\texttt{TP\_proj2.py}}
+\lstinputlisting{TP_proj2.py}
+
+
+
 
 
 
