@@ -29,7 +29,7 @@
 
 \renewcommand\ExerciseListHeader{%
     \bfseries\large\ExerciseListName\ExerciseHeaderNB : \ExerciseHeaderTitle\ExerciseHeaderOrigin%
-\addcontentsline{toc}{subsection}{\ExerciseListName\ExerciseHeaderNB : \ExerciseHeaderTitle\ExerciseHeaderOrigin}
+\addcontentsline{toc}{subsubsection}{\ExerciseListName\ExerciseHeaderNB : \ExerciseHeaderTitle\ExerciseHeaderOrigin}
 }
 
 
@@ -127,6 +127,15 @@
 
 \renewcommand{\contentsname}{Summary}
 
+\newcommand{\addsection}[1] {\newpage
+\section*{#1}
+\addcontentsline{toc}{section}{#1}}
+
+\newcommand{\addsubsection}[1] {
+\subsection*{#1}
+\addcontentsline{toc}{subsection}{#1}}
+
+
 
 \begin{document}
 %-------
@@ -148,32 +157,27 @@ These exercises are  intended as an introduction to plasma physics through Parti
 
 The code used is called SMILEI and is currently developed at LULI in collaboration with various laboratories 
 
-\subsection*{Links:}
-\begin{tabularx}{0.95\textwidth}{rl}
-These notes: & \url{https://github.com/iltommi/TPUPMC} \\
-Code homepage: & \url{http://www.maisondelasimulation.fr/smilei}\\
-Code download: &\url{https://github.com/SmileiPIC/Smilei}
-\end{tabularx}
-
-
-\vspace{20pt}
-
 
 %\begin{center}
 %\includegraphics[width=0.5\textwidth]{smileiLogo.pdf}
 %\end{center}
 
 \tableofcontents
+\subsection*{Links:}
+\begin{tabularx}{0.95\textwidth}{rl}
+These notes: & \url{https://github.com/iltommi/TPUPMC} \\
+Smilei homepage: & \url{http://www.maisondelasimulation.fr/smilei}\\
+Smilei download: &\url{https://github.com/SmileiPIC/Smilei}
+\end{tabularx}
 
 
 %%%%%%%%%%%%%%%%%%
 %  INTRODUCTION  %
 %%%%%%%%%%%%%%%%%%
 \newpage
-\section*{Introduction}\label{intro}
-\addcontentsline{toc}{section}{Introduction}
+\addsection{Introduction}\label{intro}
 
-\subsection*{The Particle-In-Cell code SMILEI}
+\addsubsection{The Particle-In-Cell code SMILEI}
 
 SMILEI is a Particle-In-Cell (PIC) code initially developed to study laser-plasma interaction at extreme intensities. 
 The PIC method aims at solving the Maxwell-Vlasov system of  equations~\cite{birdsall_langdon}.
@@ -207,7 +211,7 @@ where $\vx^j$ and $\vp^j$ are the position and momentum of the $j^{th}$ macro-pa
 \end{eqnarray*}
 where we have explicitly written the Lorentz force acting on the $j^{th}$ particle with charge $q$ and mass $m_s$, and $\vE^j$ and $\vB^j$ are the electric and magnetic fields seen by this particle, respectively.
 
-\subsection*{Fluid equations}
+\addsubsection{Fluid equations}
 
 The fluid equations studied in the course can be deduced by the kinetic description, and are thus contained in the kinetic description 
 in the limit where kinetic effects are not dominant, and the particle distribution function can be described as a local Maxwellian. 
@@ -230,7 +234,7 @@ p_s &=& n_s T_s \, \\
 T_s &=& C_s n_s^{\gamma_s-1}
 \end{eqnarray*}
 
-\subsection*{Normalizations}
+\addsubsection{Normalizations}
 
 The PIC code SMILEI is an electromagnetic PIC code. As such, it solves Maxwell's equations in which a characteristic velocity, that of light $c = (\epsilon_0 \mu_0)^{-1/2}$ appears. It is therefore natural to normalise velocities in the code to $c$. Similarly, it is interesting to normalise the charge of all particles in the plasma to $e$ (with $-e$ the charge of the electron) and all masses to $m_e$ the electron mass.
 
@@ -259,7 +263,7 @@ This first project aims at illustrating a central mechanism of plasma physics, t
 The code input file for this simulation are available in the file \texttt{TPUPMC/TP\_proj1.py} and reproduced in annex of this document.
 Here, we just reproduce the sections relating to the definition of the main simulation parameters the species an their density profiles.
 
-\subsection*{Initial set-up}
+\addsubsection{Initial set-up}
 To do so, we consider a plasma with an initial  constant density $n_{e0} = Z\,n_{i0}$ (equilibrium solution).
 
 We also fix $n_{e0}=1$ such that times are now normalised to $\omega_{pe}^{-1}$, distances to $c/\omega_{pe}$ and so forth.
@@ -318,7 +322,7 @@ Plot the corresponding energy from the PIC simulation. Discuss the results: is t
 \end{ExerciseList}
 
 
-\subsection*{Effect of the temporal and spatial resolution}
+\addsubsection{Effect of the temporal and spatial resolution}
 
 As we are dealing with numerical simulation, the algorithms used require to be stable to fulfil some well-defined conditions:\\
 
@@ -383,7 +387,7 @@ You can use the table to note your results. Plot the oscillation frequency as a 
 \end{tabularx}
 
 
-\subsection*{Kinetic (wave-breaking) effects}
+\addsubsection{Kinetic (wave-breaking) effects}
 
 We will now investigate the changes brought by taking a large amplitude for the initial density perturbation ($\delta~n~\lesssim~1$). To do so, it is necessary to take sufficiently small time-step and cell-length (take care to fulfil the CFL condition in your choice of parameters, e.g. by using $\Delta x = 2\,\Delta t $).
 
@@ -402,7 +406,7 @@ We will now investigate the changes brought by taking a large amplitude for the 
 \newpage
 \section{Two-stream instability}\label{proj2}
 
-\subsection*{Initial set-up and theory}
+\addsubsection{Initial set-up and theory}
 
 This second project aims at illustrating the so-called two-stream instability.
 To do so, we consider a 1D infinite plasma with averaged constant density $n_{e0} = 1$. 
@@ -472,7 +476,7 @@ What do $\omega$ and $\gamma$ stand for? }
 
 
 
-\subsection*{Numerical simulation of the 2-stream instability}
+\addsubsection{Numerical simulation of the 2-stream instability}
 
 We will now perform numerical simulation using the PIC code SMILEI for different values of $v_0 k$.
 As discussed above, we take $v_0=10^{-1}$ which ensures that relativistic effects can be neglected.
@@ -515,14 +519,13 @@ The input file to start these simulation is given in the file \texttt{TPUPMC/TP\
 %  REFERENCES  %
 %%%%%%%%%%%%%%%%
 \newpage
-\section*{SMILEI namelists}
-\addcontentsline{toc}{section}{SMILEI namelists}
+\addsection{SMILEI namelists}
 
-\subsection*{\texttt{TP\_proj1.py}}
+\addsubsection{\texttt{TP\_proj1.py}}
 \lstinputlisting{TP_proj1.py}
 
 \newpage
-\subsection*{\texttt{TP\_proj2.py}}
+\addsubsection{\texttt{TP\_proj2.py}}
 \lstinputlisting{TP_proj2.py}
 
 
