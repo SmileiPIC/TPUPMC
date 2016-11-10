@@ -1,16 +1,17 @@
-output_every=20
+output_every=1
 n_part=10
-velocity=0.02
-amplitude=0.02
+velocity=0.1
+amplitude=0.001
+length = 0.69
 
 Main(
     geometry = "1d3v",
     interpolation_order = 2,
-    sim_time = 50.0,
-    timestep = 0.02,
-    sim_length  = [1.0],
-    cell_length = [0.02],
-    number_of_patches = [ 2 ],
+    sim_time = 10.0,
+    timestep = 0.005,
+    sim_length  = [length],
+    cell_length = [length/128],
+    number_of_patches = [ 1 ],
     print_every = output_every,
     bc_em_type_x = ['periodic'],
     poisson_iter_max=0
@@ -66,7 +67,7 @@ DiagParticles(
     every = output_every,
     species = ['eon1', 'eon2'],
     axes = [
-        ["x", 0., 1., 100],
+        ["x", 0., length, 100],
         ["px", -4*velocity, 4*velocity, 100]
     ]
 )

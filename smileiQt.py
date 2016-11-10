@@ -20,6 +20,7 @@ from matplotlib.backends.backend_qt4agg import (
     FigureCanvasQTAgg as FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar)
 
+
 # from matplotlib.backends import qt_compat
 # 
 # if qt_compat.QT_API == qt_compat.QT_API_PYSIDE:
@@ -200,7 +201,7 @@ class smileiQtPlot(QWidget):
         for frame in [self.ui.scalars, self.ui.fields, self.ui.phase] :
             settings.beginGroup(frame.objectName())            
             for chkbox in frame.findChildren(QCheckBox):
-                chkbox.setChecked(settings.value(chkbox.text()).toBool())
+                chkbox.setChecked(settings.value(chkbox.text())=='true')
             settings.endGroup()
         settings.endGroup()
         self.ui.tabWidget.setCurrentIndex(0)
@@ -272,7 +273,7 @@ class smileiQtPlot(QWidget):
                 if i.isChecked() :
                     name=str(i.text())
                     
-                    x=self.smilei.Scalar(name).getAvailableTimesteps()
+                    x=self.smilei.Scalar(name).getAvailableTimesteps()*self.timestep
                     y=self.smilei.Scalar(name).getData()
                     self.scalarDict[name]=(x,y)
                     ax=self.fig.add_subplot(self.nplots,1,plot+1)
@@ -459,9 +460,9 @@ class smileiQtPlot(QWidget):
         
         self.ui.spinStep.setValue(self.step)
         # JDT time=float(self.step)/self.timestep*self.fieldEvery
-        time=self.fieldSteps[self.step]
+        time=self.fieldSteps[self.step]*self.timestep
         
-        self.fig.suptitle("Time %g"%time)
+        self.fig.suptitle("Time: %g"%time)
         
         for name in self.scalarDict:
             self.ax[name].lines[-1].set_xdata(time)
@@ -564,6 +565,7 @@ class smileiQt(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     args = ["."] if len(sys.argv) == 1 else sys.argv[1:]
+    app.self.setWindowIcon(QIcon(os.path.dirname(os.path.realpath(__file__))+'/smileiIcon.ico'))
 
     smileiQt(args)
     sys.exit(app.exec_())

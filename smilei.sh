@@ -1,5 +1,7 @@
 #!/bin/bash
 
+tput reset
+
 MPIEXEC=mpirun
 
 H=$PWD # current dir

@@ -4,14 +4,14 @@ n_part=10
 Main(
     geometry = "1d3v",
     interpolation_order = 2,
-    sim_time = 30.0,
-    timestep = 0.01,
-    sim_length  = [1.0],
-    cell_length = [0.01],
-    number_of_patches = [ 2 ],
+    sim_time = 10*math.pi,
+    timestep = 0.019,
+    sim_length  = [20],
+    cell_length = [0.2],
+    number_of_patches = [ 1 ],
     print_every = output_every,
-    bc_em_type_x = ['silver-muller'],
-)
+    bc_em_type_x = ['periodic']
+    )
 
 Species(
     species_type = 'ion',
@@ -33,7 +33,7 @@ Species(
     n_part_per_cell = n_part,
     mass = 1.0,
     charge = -1.0,
-    nb_density = cosine(1,xamplitude=0.1,xnumber=1),
+    nb_density = cosine(1,xamplitude=0.01,xnumber=1),
     bc_part_type_xmin = "none",
     bc_part_type_xmax = "none"
 )
@@ -49,14 +49,14 @@ DiagParticles(
     every = output_every,
     species = ["eon"],
     axes = [
-        ["x", 0., 1., 100],
-        ["px", -0.04, 0.04, 100]
+        ["x", 0., Main.sim_length[0], 100],
+        ["px", -0.5, 0.5, 100]
     ]
 )
 
 DiagFields(
     every = output_every,
-    fields = ['Jx', 'Rho_eon']
+    fields = ['Jx', 'Rho_eon', 'Ex']
 )
 
 

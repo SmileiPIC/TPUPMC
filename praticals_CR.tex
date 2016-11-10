@@ -10,11 +10,12 @@
 \usepackage{bm}           %  bold math
 \usepackage{color}        %  textcolor
 \usepackage{ulem}        %  sout (strike out)
-%tommaso
+
 \usepackage{tabularx}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
 \usepackage{times}
+
 \usepackage{wrapfig}
 
 \usepackage[noanswer]{exercise}
@@ -122,7 +123,7 @@
 
 \usepackage{etoolbox}
 \makeatletter
-\patchcmd{\@maketitle}{\LARGE \@title}{\fontsize{26}{19.2}\selectfont\@title}{}{}
+\patchcmd{\@maketitle}{\LARGE \@title}{\fontsize{24}{19.2}\selectfont\textbf{\@title}}{}{}
 \makeatother
 
 \renewcommand{\contentsname}{Summary}
@@ -141,7 +142,7 @@
 %-------
 % Title
 %-------
-\title{UPMC - TP plasma \\ \vspace{10pt} Introduction to plasma physics \\ \vspace{10pt} with Particle-In-Cell simulations}
+\title{UPMC - TP plasma: \\ \vspace{10pt} Introduction to plasma physics \\ \vspace{10pt} with Particle-In-Cell simulations}
 
 
 \author{Caterina~Riconda \\ {\tiny\url{caterina.riconda@upmc.fr}} \and Tommaso Vinci \\ {\tiny\url{tommaso.vinci@polytechnique.edu}} \and Mickael~Grech \\ {\tiny\url{mickael.grech@polytechnique.edu}}}
@@ -263,6 +264,8 @@ This first project aims at illustrating a central mechanism of plasma physics, t
 The code input file for this simulation are available in the file \texttt{TPUPMC/TP\_proj1.py} and reproduced in annex of this document.
 Here, we just reproduce the sections relating to the definition of the main simulation parameters the species an their density profiles.
 
+To edit the file, open the directory  \texttt{TPUPMC}(a link is on the desktop)  and double-click on the file  \texttt{TP\_proj1.py} 
+
 \addsubsection{Initial set-up}
 To do so, we consider a plasma with an initial  constant density $n_{e0} = Z\,n_{i0}$ (equilibrium solution).
 
@@ -284,7 +287,7 @@ Here, we consider a periodic (cosine) perturbation of the (normalised) electron 
 \begin{eqnarray}\label{eq_pert}
 n_e(t=0,x) = n_{e0}(x) = 1 + \delta n\,\cos(k\,x)\,,
 \end{eqnarray}
-where $k$ is the mode of the parturbation and $\delta n$ its amplitude. 
+where $k$ is the mode of the parturbation and $\delta n$ its amplitude (\param{xamplitude}). 
 In the simulation, what we actually fix are the simulation length $L_{\rm sim}$ (\code{sim\_length}) and the number of modes (see below) $N$ so that $k=2\pi\,N/L_{\rm sim}$.
 
 Which translates in the code below ($N$=\param{xnumber}):
@@ -347,13 +350,14 @@ As discussed above, the choice of the time interval can affect the precision and
 
     \Question{Verify that you are back to 10 particles per cell. For the temporal resolution $\Delta t = 0.2$ calculate the correction to the frequency from the formula above.  
     
-    Take in the code \code{timestep} = 0.2 , \code{cell\_length} = 0.24, \code{sim\_lenght}= 24., and in the \class{DiagPhase} take the second value of  the first component of \code{axes} = 24. (maximum value for the position/plasma length), and for the the second component of \code{axes} \texttt{["px", -0.12, 0.12,100]} (extremes values for the momentum).   Deduce the oscillation frequency form the time evolution of the electrostatic energy in the code and compare with the theoretical result. Comment the result.}
+    Take in the code \code{timestep} = 0.2~, \code{cell\_length} = 0.24, \code{sim\_lenght}= 24., and in the \class{DiagPhase} take the second value of  the first component of \code{axes} = 24. (maximum value for the position/plasma length), and for the the second component of \code{axes} \texttt{["px", -0.12, 0.12,100]} (extremes values for the momentum).   Deduce the oscillation frequency form the time evolution of the electrostatic energy in the code and compare with the theoretical result. Comment the result.}
     \Question{Calculate the value of $\Delta t $ such that the Nyquist frequency is equal to the frequency of oscillation of the electrostatic energy. N.B. $\omega_c = 2 \pi \nu_c$. Why do we calculate this value?}
-    \Question{Measure in the code  the time of oscillation of the electrostatic energy for different value of $\Delta t$ (\code{timestep}) , and modify \code{cell\_length} accordingly: you need to take care to fulfil the CFL condition in your choice of parameters, e.g. by using $\Delta x = 1.2\,\Delta t$). Deduce the oscillation time of the plasma wave, the oscillation frequency of the electrostatic energy, and the oscillation frequency of the of the plasma wave, you can write your results in the table. The maximum value of $\Delta t $ that we will take is $\Delta t = 2.5$, with cell size $2.55$. What happens for this value? Take a longer duration of the simulation if needed.}
+    \Question{Measure in the code  the time of oscillation of the electrostatic energy for different value of $\Delta t$ (\code{timestep}) and modify \code{cell\_length} accordingly: you need to take care to fulfil the CFL condition in your choice of parameters, e.g. by using $\Delta x = 1.2\,\Delta t$). Deduce the oscillation time of the plasma wave, the oscillation frequency of the electrostatic energy, and the oscillation frequency of the of the plasma wave, you can write your results in the table. The maximum value of $\Delta t $ that we will take is $\Delta t = 2.5$, with cell size $2.55$. What happens for this value? Take a longer duration of the simulation if needed.}
     \Question{Make a plot of the oscillation frequency of the plasma wave as a function of $\Delta t$, and discuss the result. }
 \end{ExerciseList}
 
 
+\vspace{10pt}
 \begin{tabularx}{0.95\textwidth}{X|X|X|X|X}
 \centering\textbf{$\Delta t$} & \centering\textbf{$\tau_{E,n}$} & \centering\textbf{$\tau_{P,n}$} &  \centering\textbf{$\omega_{E,n}$} & \centering\arraybackslash\textbf{$\omega_{P,n}$} \\
 \hline
@@ -379,7 +383,7 @@ k = {\rm \param{xnumber}} \frac{2\pi}{\rm \code{sim\_length}}\,.
 You can use the table to note your results. Plot the oscillation frequency as a function of the wave vector. Comment the plot.}
 \end{ExerciseList}
 
-
+\vspace{10pt}
 \begin{tabularx}{0.95\textwidth}{X|X|X|X|X}
 \centering\large\textbf{$k$} & \centering\large\textbf{$\tau_{E,n}$} & \centering\large\textbf{$\tau_{P,n}$} &  \centering\large\textbf{$\omega_{E,n}$} & \centering\arraybackslash\large\textbf{$\omega_{P,n}$} \\
 \hline
@@ -424,9 +428,7 @@ n_e^+(t=0,x) = n_e^-(t=0,x) = \frac{n_{e0}}{2}\,\left[1 + \delta n\,\cos(k\,x)\r
 \begin{wrapfigure}[15]{r}{0.4\textwidth}
 \def\svgwidth{\linewidth}
 \input{Fig_2stream.pdf_tex}
-%\includegraphics[width=\linewidth]{Fig_2stream.pdf}
-\label{Fig_2stream.pdf}
-\caption{Two stream instability}
+I\caption{Two stream instability}
 \label{Fig_2stream}
 \end{wrapfigure}
 
@@ -449,7 +451,7 @@ Note that here, $\omega_{p0}$ denotes the plasma frequency at the total (backgro
 
 \begin{ExerciseList} 
 \vspace{0.5cm}
-  \Exercise[title={Dispersion relation, characteristic frequencies and growth rate: Theory},label={ex6}] \leavevmode
+  \Exercise[title={Dispersion relation, characteristic frequencies and growth rate},label={ex6}] \leavevmode
 
     \Question{For a given value of $v_0 k$, show that Eq.~\eqref{eq_disprel_2stream} is equivalent to the biquadratic equation on $\omega$:
 \begin{eqnarray}\label{eq_biquad}
