@@ -195,8 +195,9 @@ class smileiQtPlot(QWidget):
       
     def load_settings(self):
         settings=QSettings(QFileInfo(__file__).fileName(),"")
+        log.info("Load settings file: %s"%settings.fileName())
         settings.beginGroup(QDir(self.dirName).dirName())
-        log.info("settings file: %s"%settings.fileName())
+        self.restoreGeometry(settings.value("geometry").toByteArray());
         frames=[self.ui.scalars, self.ui.fields, self.ui.phase]
         for frame in [self.ui.scalars, self.ui.fields, self.ui.phase] :
             settings.beginGroup(frame.objectName())            
@@ -208,7 +209,9 @@ class smileiQtPlot(QWidget):
 
     def save_settings(self):
         settings=QSettings(QFileInfo(__file__).fileName(),"")
+        log.info("Save settings file: %s"%settings.fileName())
         settings.beginGroup(QDir(self.dirName).dirName())
+        settings.setValue("geometry", self.saveGeometry())
         frames=[self.ui.scalars, self.ui.fields, self.ui.phase]
         for frame in [self.ui.scalars, self.ui.fields, self.ui.phase] :
             settings.beginGroup(frame.objectName())            
@@ -279,7 +282,7 @@ class smileiQtPlot(QWidget):
                     ax=self.fig.add_subplot(self.nplots,1,plot+1)
                     ax.xaxis.grid(True)
                     ax.yaxis.grid(True)
-                    print len(x), len(y)
+
                     ax.plot(x,y)
                     ax.set_xlim(x.min(),x.max())
                     
@@ -503,6 +506,12 @@ class smileiQtPlot(QWidget):
 class smileiQt(QMainWindow):
     def __init__(self, args):
         super(smileiQt, self).__init__()
+
+        settings=QSettings(QFileInfo(__file__).fileName(),"");
+        self.restoreGeometry(settings.value("geometry").toByteArray());
+        self.restoreState(settings.value("swindowState").toByteArray());
+    
+        settings.setValue("geometry", self.saveGeometry())
                 
         self.setWindowFlags(self.windowFlags() | Qt.Tool | Qt.Dialog)
 
@@ -552,6 +561,9 @@ class smileiQt(QMainWindow):
             self.addDir(str(dirName))
     
     def closeEvent(self,event):
+        settings=QSettings(QFileInfo(__file__).fileName(),"")
+        settings.setValue("geometry", self.saveGeometry())
+        settings.setValue("windowState", self.saveState())
         if len(self.plots)>0:
             result = QMessageBox.question(self,"Confirm Exit...","Are you sure you want to exit ?", QMessageBox.Yes| QMessageBox.No)
             if result == QMessageBox.No:
