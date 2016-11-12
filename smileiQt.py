@@ -509,7 +509,7 @@ class smileiQt(QMainWindow):
 
         settings=QSettings(QFileInfo(__file__).fileName(),"");
         self.restoreGeometry(settings.value("geometry").toByteArray());
-        self.restoreState(settings.value("swindowState").toByteArray());
+        self.restoreState(settings.value("windowState").toByteArray());
     
         settings.setValue("geometry", self.saveGeometry())
                 
