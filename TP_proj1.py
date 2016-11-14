@@ -4,11 +4,11 @@ n_part=10
 Main(
     geometry = "1d3v",
     interpolation_order = 2,
-    sim_time = 10*math.pi,
+    sim_time = 0.1*math.pi,
     timestep = 0.019,
     sim_length  = [20],
-    cell_length = [0.2],
-    number_of_patches = [ 1 ],
+    cell_length = [2],
+    number_of_patches = [ 2 ],
     print_every = output_every,
     bc_em_type_x = ['periodic']
     )
@@ -38,21 +38,21 @@ Species(
     bc_part_type_xmax = "none"
 )
 
-DiagScalar (
-    precision = 3,
-    every = output_every,
-    vars = ['Utot', 'Ukin', 'Uelm', 'Ukin_eon', 'Ntot_eon', 'Uelm_Ex']
-) 
- 
-DiagParticles(
-    output = "density",
-    every = output_every,
-    species = ["eon"],
-    axes = [
-        ["x", 0., Main.sim_length[0], 100],
-        ["px", -0.5, 0.5, 100]
-    ]
-)
+# DiagScalar (
+#     precision = 3,
+#     every = output_every,
+#     vars = ['Utot', 'Ukin', 'Uelm', 'Ukin_eon', 'Ntot_eon', 'Uelm_Ex']
+# ) 
+#  
+# DiagParticles(
+#     output = "density",
+#     every = output_every,
+#     species = ["eon"],
+#     axes = [
+#         ["x", 0., Main.sim_length[0], 100],
+#         ["px", -0.5, 0.5, 100]
+#     ]
+# )
 
 DiagFields(
     every = output_every,

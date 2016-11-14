@@ -577,7 +577,7 @@ class smileiQt(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     args = ["."] if len(sys.argv) == 1 else sys.argv[1:]
-    app.setWindowIcon(QIcon(os.path.dirname(os.path.realpath(__file__))+'/smileiIcon.ico'))
+    app.setWindowIcon(QIcon(os.path.dirname(os.path.realpath(__file__))+'/smileiIcon.svg'))
 
     smileiQt(args)
     sys.exit(app.exec_())
