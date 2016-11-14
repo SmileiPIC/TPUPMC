@@ -570,6 +570,8 @@ class smileiQt(QMainWindow):
         event.accept()
         QApplication.exit()
 
+    
+        
 def sigint_handler(*args):
     """Handler for the SIGINT signal."""
     print("Quitting")
@@ -577,16 +579,21 @@ def sigint_handler(*args):
         my_plt.save_settings() 
     my_win.save_settings()
     QApplication.exit()
-    
 
-signal.signal(signal.SIGINT,sigint_handler)
+
+class Application(QApplication):
+    def event(self, e):
+        return QApplication.event(self, e)
         
 if __name__ == '__main__':
 
-    app = QApplication(sys.argv)
+    app = Application(sys.argv)
+    app.startTimer(200)
+    
     args = ["."] if len(sys.argv) == 1 else sys.argv[1:]
     app.setWindowIcon(QIcon(os.path.dirname(os.path.realpath(__file__))+'/smileiIcon.svg'))
 
     my_win=smileiQt(args)
+    signal.signal(signal.SIGINT, sigint_handler)
     sys.exit(app.exec_())
     
