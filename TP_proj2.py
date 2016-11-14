@@ -1,16 +1,17 @@
-output_every=1
-n_part=10
+output_every=10
+n_part=100
 velocity=0.1
-amplitude=0.001
+amplitude=0.01
 length = 0.69
 
 Main(
     geometry = "1d3v",
     interpolation_order = 2,
-    sim_time = 10.0,
+    sim_time = 20.0,
     timestep = 0.005,
     sim_length  = [length],
-    cell_length = [length/128],
+    number_of_cells = [128],
+#    cell_length = [length/128],
     number_of_patches = [ 1 ],
     print_every = output_every,
     bc_em_type_x = ['periodic'],

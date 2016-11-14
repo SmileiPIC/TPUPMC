@@ -4,7 +4,7 @@ n_part=10
 Main(
     geometry = "1d3v",
     interpolation_order = 2,
-    sim_time = 10*math.pi,
+    sim_time = 2*math.pi,
     timestep = 0.019,
     sim_length  = [20],
     cell_length = [0.2],
@@ -50,7 +50,7 @@ DiagParticles(
     species = ["eon"],
     axes = [
         ["x", 0., Main.sim_length[0], 100],
-        ["px", -0.5, 0.5, 100]
+        ["px", -0.05, 0.05	, 100]
     ]
 )
 
