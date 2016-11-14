@@ -20,6 +20,9 @@ from matplotlib.backends.backend_qt4agg import (
     FigureCanvasQTAgg as FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar)
 
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
 
 # from matplotlib.backends import qt_compat
 # 
@@ -39,12 +42,7 @@ from PyQt4 import uic
 from Smilei import *
 import numpy as np
 
-import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-
-import signal
-signal.signal(signal.SIGINT, signal.SIG_DFL)
-        
+import signal        
         
 class smileiQtPlot(QWidget):
     scalarDict=dict()
@@ -197,7 +195,7 @@ class smileiQtPlot(QWidget):
         settings=QSettings(QFileInfo(__file__).fileName(),"")
         log.info("Load settings file: %s"%settings.fileName())
         settings.beginGroup(QDir(self.dirName).dirName())
-        self.restoreGeometry(settings.value("geometry").toByteArray());
+        self.restoreGeometry(settings.value("geometry").toByteArray())
         frames=[self.ui.scalars, self.ui.fields, self.ui.phase]
         for frame in [self.ui.scalars, self.ui.fields, self.ui.phase] :
             settings.beginGroup(frame.objectName())            
@@ -441,14 +439,14 @@ class smileiQtPlot(QWidget):
     def on_button_press(self,event):
         if not event.inaxes: return
         if self.shiftPressed == True :
-            self.ui.logger.moveCursor (QTextCursor.End);
+            self.ui.logger.moveCursor (QTextCursor.End)
             for i in range(len(self.fig.axes)) :
                 if self.fig.axes[i] == event.inaxes:                    
                     # JDT txt = "%d %G %G %G\n" % (i, self.step/self.timestep*self.fieldEvery, event.xdata, event.ydata)
                     txt = "%d %G %G\n" % (i, event.xdata, event.ydata)
                     QApplication.clipboard().setText(txt)
-                    self.ui.logger.insertPlainText(txt);
-                    self.ui.logger.moveCursor (QTextCursor.End);
+                    self.ui.logger.insertPlainText(txt)
+                    self.ui.logger.moveCursor (QTextCursor.End)
             
         
     def doPlots(self):
@@ -507,9 +505,9 @@ class smileiQt(QMainWindow):
     def __init__(self, args):
         super(smileiQt, self).__init__()
 
-        settings=QSettings(QFileInfo(__file__).fileName(),"");
-        self.restoreGeometry(settings.value("geometry").toByteArray());
-        self.restoreState(settings.value("windowState").toByteArray());
+        settings=QSettings(QFileInfo(__file__).fileName(),"")
+        self.restoreGeometry(settings.value("geometry").toByteArray())
+        self.restoreState(settings.value("windowState").toByteArray())
     
         settings.setValue("geometry", self.saveGeometry())
                 
@@ -560,25 +558,42 @@ class smileiQt(QMainWindow):
         if not dirName.isEmpty():
             self.addDir(str(dirName))
     
-    def closeEvent(self,event):
+    def save_settings(self):
         settings=QSettings(QFileInfo(__file__).fileName(),"")
         settings.setValue("geometry", self.saveGeometry())
         settings.setValue("windowState", self.saveState())
-        if len(self.plots)>0:
-            result = QMessageBox.question(self,"Confirm Exit...","Are you sure you want to exit ?", QMessageBox.Yes| QMessageBox.No)
-            if result == QMessageBox.No:
-                event.ignore()
-                return
-            for plot in self.plots:
-                plot.deleteLater()
+    
+    def closeEvent(self,event):
+        self.save_settings()
+        for plot in self.plots:
+            plot.deleteLater()
         event.accept()
         QApplication.exit()
 
+    
+        
+def sigint_handler(*args):
+    """Handler for the SIGINT signal."""
+    print("Quitting")
+    for my_plt in my_win.plots:
+        my_plt.save_settings() 
+    my_win.save_settings()
+    QApplication.exit()
+
+
+class Application(QApplication):
+    def event(self, e):
+        return QApplication.event(self, e)
+        
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
+
+    app = Application(sys.argv)
+    app.startTimer(200)
+    
     args = ["."] if len(sys.argv) == 1 else sys.argv[1:]
     app.setWindowIcon(QIcon(os.path.dirname(os.path.realpath(__file__))+'/smileiIcon.svg'))
 
-    smileiQt(args)
+    my_win=smileiQt(args)
+    signal.signal(signal.SIGINT, sigint_handler)
     sys.exit(app.exec_())
     
