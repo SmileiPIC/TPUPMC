@@ -88,7 +88,7 @@
              <bool>false</bool>
             </property>
             <property name="prefix">
-             <string>step </string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -145,8 +145,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>161</width>
-               <height>537</height>
+               <width>164</width>
+               <height>546</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -182,8 +182,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>161</width>
-               <height>537</height>
+               <width>165</width>
+               <height>546</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -219,8 +219,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>161</width>
-               <height>537</height>
+               <width>164</width>
+               <height>546</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
