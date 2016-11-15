@@ -14,6 +14,9 @@
 \usepackage{tabularx}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{naturalnames}{hyperref}
+
 \usepackage{times}
 
 \usepackage{wrapfig}
@@ -293,11 +296,11 @@ In the simulation, what we actually fix are the simulation length $L_{\rm sim}$ 
 Which translates in the code below ($N$=\param{xnumber}):
 \lstinputlisting[linerange={29-39}]{TP_proj1.py}
 
+\newpage 
 
 \begin{ExerciseList}
 \vspace{0.5cm}
   \Exercise[title={Simulations of electron-plasma oscillations},label={ex2}] \leavevmode
-
     \Question{\label{q2_1}In the limit of small perturbations (i.e.\ $\delta n \ll 1$ in Eq.~\ref{eq_pert}), derive analytically the equation for $n_e(t,x)$ for the case of a cold plasma with immobile ions.   What is the theoretical frequency of plasma oscillations in normalised units? Write the solution for the density perturbation $n_{e1}(x,t)$ in the form of a stationary wave with an arbitrary phase}
     \Question{Derive the relationship between $n_{e1}(t,x)$, $u_{e1,x}(t,x)$ and $E_{1,x}(t,x)$ from the linearised  fluid equation system, for a cold plasma, including Maxwell's equations.}
     \Question{In the initial set up the plasma macro-particles  can be uniformly distributed over the whole plasma length. Let us say that the interval between two near neighbours is given by  $x_{0a}-x_{0b}$, then   the equilibrium density is given by  $n_{e0} = \frac{1}{(x_{0a}-x_{0b})}$. A small perturbation $\delta x$  corresponds to a particle displacement and to a new position  $x = x_0 +  \delta x$. At time $t=0$ we initialize the system with a small perturbation and we can deduce the corresponding initial density  $n_e(x,t=0)= \frac{1}{(x_{a}-x_{b})}$. For a small perturbation we can write  $n_e(x,t=0)=n_{e0}+n_{e1}(x)$. Derive  $n_{e1}(x)$ in the limit  $\delta x << (x0a-x0b)$. If we take  $\delta x = x_1 \sin(kx +\varphi)$, what is the form of $n_{e1}(x)$?}
@@ -325,6 +328,7 @@ Plot the corresponding energy from the PIC simulation. Discuss the results: is t
 
 \end{ExerciseList}
 
+\newpage
 
 \addsubsection{Effect of the temporal and spatial resolution}
 
@@ -393,7 +397,7 @@ You can use the table to note your results. Plot the oscillation frequency as a 
  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\ \hline  & & & & \\  & & & & \\  
 \end{tabularx}
 
-
+\newpage 
 \addsubsection{Kinetic (wave-breaking) effects}
 
 We will now investigate the changes brought by taking a large amplitude for the initial density perturbation ($\delta~n~\lesssim~1$). To do so, it is necessary to take sufficiently small time-step and cell-length (take care to fulfil the CFL condition in your choice of parameters, e.g. by using $\Delta x = 2\,\Delta t $).
@@ -403,8 +407,19 @@ We will now investigate the changes brought by taking a large amplitude for the 
   \Exercise[title={Kinetic effects for large amplitude plasma oscillations},label={ex5}] \leavevmode
 
     \Question{In the conditions of exercise \ref{ex2}, (e.g. length 1., cell size 0.02, time step 0.01 and $\delta n = 0.01$) plot the electron phase-space ($x,p_x$). Does this bring any additional information as compared to the fluid description? Justify your answer.}
-    \Question{Now, increase the amplitude of the density perturbation to $\delta n = 0.5$ and reduce the time step to $\Delta t =  10^{-3}$ and the cell size accordingly. Check  the electron phase-space ($x,p_x$). (Note that you may have to increase the minimum and maximum value of the momentum when defining the phase-space diagnostics in the input file, parameters 'mom\_min' and 'mom\_max'.) Discuss what you observed: does the kinetic description brings more information that the linearised fluid approach? What about the temporal evolution of the electrostatic field energy?}
-    \Question{Now increase $\delta n$ to 0.9. Check the  electron phase-space ($x,p_x$) and the temporal evolution of the electrostatic field energy and of the particles kinetic energy. How does it differ from what was observed in the limit $\delta n \ll 1$ (exercise \ref{ex2})? Can you explain such differences? What about the phase-space? Does this bring any additional information as compared to the fluid description? Justify your answer.}
+    \Question{Now, increase the amplitude of the density perturbation to $\delta n = 0.5$ and reduce the time step to $\Delta t =  10^{-3}$ and the cell size accordingly. Check  the electron phase-space ($x,p_x$). (Note that you may have to increase the minimum and maximum value of the momentum when defining the phase-space diagnostics in the input file, parameters 'mom\_min' and 'mom\_max'.) Discuss what you observed: 
+    \begin{itemize}
+    \item does the kinetic description brings more information that the linearised fluid approach? 
+    \item What about the temporal evolution of the electrostatic field energy?
+    \end{itemize}}
+    
+    \Question{Now increase $\delta n$ to 0.9. Check the  electron phase-space ($x,p_x$) and the temporal evolution of the electrostatic field energy and of the particles kinetic energy. 
+    \begin{itemize}
+    \item How does it differ from what was observed in the limit $\delta n \ll 1$ (exercise \ref{ex2})? 
+    \item Can you explain such differences? 
+    \item What about the phase-space? 
+    \item Does this bring any additional information as compared to the fluid description? Justify your answer.
+    \end{itemize}}
 \end{ExerciseList}
 
 %%%%%%%%%%%%%%%%%%
@@ -436,9 +451,9 @@ I\caption{Two stream instability}
 \end{wrapfigure}
 
 Here, $\delta n = 10^{-2}$ is the amplitude of the perturbation and $k$ its mode.
-As periodic conditions allow us for simulating an infinite plasma, and taking $n=1$ mode  (in the input file, see Proj.~1~\ref{proj1}), the wave-number $k$ is directly linked to the length of the simulation box by:
+As periodic conditions allow us for simulating an infinite plasma, and taking $n=1$ mode  (in the input file, see Proj.~\ref{proj1}), the wave-number $k$ is directly linked to the length of the simulation box by:
 \begin{eqnarray}\label{eq_k}
-k = \frac{2\pi}{\rm sim\_length}\,.
+k = \frac{2\pi\,n}{\code{sim\_length}}\,.
 \end{eqnarray}
 
 
@@ -496,19 +511,27 @@ If not, set the density perturbation $\delta n = 0.001$.
 
     \Question{Compute the value of \code{sim\_length} corresponding to the limit between the stable and unstable solutions.}
      
-    \Question{Compute the values of $v_0 k$ corresponding to different values of $k$ using \\ \code{sim\_length} $= 0.62 - 0.60- 0.31 - 0.16$. Calculate the corresponding values of $\omega$ from Eq. \ref{eqomega}.}
+    \Question{Compute the values of $v_0 k$ corresponding to different values of $k$ using  \code{sim\_length} $= 0.62, 0.60, 0.31, 0.16$. Calculate the corresponding values of $\omega$ from Eq. \ref{eqomega}.}
     \Question{Run the corresponding simulations.  For the phase-space diagnostics, in the input file \texttt{TP\_proj2.py}. For simulations with \code{sim\_length} $= 0.62$ and $0.60$, extract from the field energy temporal evolution the characteristic frequencies (try to estimate error bars for your measurements). Report them on the analytical predictions (from Exercise \ref{ex6}). Why does it become more difficult to extract the characteristic frequencies for \code{sim\_length}~$= 0.31 - 0.16$ ?}
-    \Question{ Discuss the general behaviour of [\rom{1}] the energy in the electrostatic field, and [\rom{2}] the behaviour in phase-space of the electron species. }
+    \Question{ Discuss the general behaviour of 
+        \begin{enumerate}
+    \item the energy in the electrostatic field,
+    \item the behaviour in phase-space of the electron species
+    \end{enumerate} }
 \end{ExerciseList}
 
 
 \begin{ExerciseList}
 \vspace{0.5cm}
-  \Exercise[title={Simulation for $v_0 k < 1$},label={ex8}] \leavevmode
+  \Exercise[title={Simulation for {$v_0 k < 1$}},label={ex8}] \leavevmode
 
     \Question{Compute the values of $v_0 k$ corresponding to \code{sim\_length} $= 0.69 - 1.03 - 1.68$. Calculate the corresponding values of $\omega$ and $\gamma$ from Eq. \ref{eqomega}.}
-    \Question{Run the corresponding simulations. For the phase-space diagnostics, in the input file \texttt{TP\_proj2.py},  take for the extremes values of the momentum in \class{DiagPhase} section (i.e.\ the  \texttt{"px"}  part of the \code{axes})   to $\pm 0.4$, respectively. For each simulation (i.e. for different value of the parameter $v_0 k$), extract from the field energy temporal evolution the characteristic frequency and growth rate of the instability (it is convenient to consider the energy plot in log-scale. To do so, just click on the corresponding panel and letter `l'). Report them on the analytical predictions (from Exercise \ref{ex6}).}
-    \Question{For each simulation, discuss the general behaviour of (i) the energy in the electrostatic field, and (ii) the behaviour in phase-space of the electron species.}
+    \Question{Run the corresponding simulations. For the phase-space diagnostics, in the input file \texttt{TP\_proj2.py},  take for the extremes values of the momentum in \class{DiagPhase} section (i.e.\ the  \texttt{"px"}  part of the \code{axes})   to $\pm 0.4$, respectively. For each simulation (i.e. for different value of the parameter $v_0 k$), extract from the field energy temporal evolution the characteristic frequency and growth rate of the instability (it is convenient to consider the energy plot in log-scale. To do so, just type on the corresponding panel and letter `l'). Report them on the analytical predictions (from Exercise \ref{ex6}).}
+    \Question{For each simulation, discuss the general behaviour of 
+    \begin{enumerate}
+    \item the energy in the electrostatic field,
+    \item the behaviour in phase-space of the electron species
+    \end{enumerate} }
     \Question{For these simulations, using the temporal evolution of the electrostatic energy, discuss over what characteristic time the instability is in its linear phase.}
     \Question{Now, considering the phase-space distribution of the electron species, discuss what happens in the nonlinear phase of the instability.}
 \end{ExerciseList}
