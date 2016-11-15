@@ -15,7 +15,7 @@ from pprint import pprint
 
 from matplotlib.figure import Figure
 from matplotlib.colors import LogNorm
-# from matplotlib.backend_bases import key_press_handler
+
 from matplotlib.backends.backend_qt4agg import (
     FigureCanvasQTAgg as FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar)
@@ -99,13 +99,13 @@ class smileiQtPlot(QWidget):
         self.canvas.mpl_connect('key_press_event', self.on_key_press)
         self.canvas.mpl_connect('key_release_event', self.on_key_release)
         self.canvas.mpl_connect('button_press_event', self.on_button_press)
-
+        
         self.toolbar = NavigationToolbar(self.canvas, self)
         self.toolbar.setFixedHeight(18)
         self.canvas.setCursor(Qt.CrossCursor)
 
-        self.ui.plotLayout.addWidget(self.canvas)
         self.ui.plotLayout.addWidget(self.toolbar)
+        self.ui.plotLayout.addWidget(self.canvas)
 
 #retrieve stuff from namelist
         self.cell_length=self.smilei.namelist.Main.cell_length[0]
@@ -360,9 +360,10 @@ class smileiQtPlot(QWidget):
     
     def on_movement(self, event):
         if not event.inaxes: return
+#        self.canvas.setCursor(Qt.CrossCursor)
         msg = "%G %G" % (event.xdata, event.ydata)
         self.ui.pos.setText(msg)
-
+        
     def on_key_press(self,event):
         if not event.inaxes: return
         if event.key == 'a':
@@ -589,6 +590,7 @@ if __name__ == '__main__':
 
     app = Application(sys.argv)
     app.startTimer(200)
+
     
     args = ["."] if len(sys.argv) == 1 else sys.argv[1:]
     app.setWindowIcon(QIcon(os.path.dirname(os.path.realpath(__file__))+'/smileiIcon.svg'))

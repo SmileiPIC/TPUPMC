@@ -4,13 +4,13 @@ n_part=10
 Main(
     geometry = "1d3v",
     interpolation_order = 2,
-    sim_time = 100*2*math.pi,
-    timestep = 2.1,
-    sim_length  = [50.4],
-    cell_length = [2.52],
+    sim_time = 10*2*math.pi,
+    timestep = 0.18,
+    sim_length  = [4],
+    cell_length = [0.2],
     number_of_patches = [ 1 ],
     print_every = output_every,
-    bsc_em_type_x = ['periodic']
+    bc_em_type_x = ['periodic']
 )
 
 Species(
@@ -50,13 +50,13 @@ DiagParticles(
     species = ["eon"],
     axes = [
         ["x", 0., Main.sim_length[0], 100],
-        ["px", -0.12, 0.12, 100]
+        ["px", -0.01, 0.01, 100]
     ]
 )
 
 DiagFields(
     every = output_every,
-    fields = ['Jx', 'Rho_eon']
+    fields = ['Jx', 'Rho_eon', 'Ex']
 )
 
 
