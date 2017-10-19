@@ -16,7 +16,7 @@ from pprint import pprint
 from matplotlib.figure import Figure
 from matplotlib.colors import LogNorm
 
-from matplotlib.backends.backend_qt4agg import (
+from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar)
 
@@ -35,9 +35,10 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 #     from PyQt4.QtGui import *
 #     from PyQt4 import uic
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4 import uic
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5 import uic
+from PyQt5.QtWidgets import *
 
 from Smilei import *
 import numpy as np
@@ -127,7 +128,7 @@ class smileiQtPlot(QWidget):
         self.ui.layoutScalars.addStretch()
 
 #fields
-        self.fieldSteps=self.smilei.Field().getAvailableTimesteps()
+        self.fieldSteps=self.smilei.Field(0).getAvailableTimesteps()
         if not np.array_equal(scalarSteps,self.fieldSteps): 
             newfieldSteps=[]
             for i in range(0,min(len(scalarSteps),len(self.fieldSteps))):
@@ -137,7 +138,7 @@ class smileiQtPlot(QWidget):
                     break
             self.fieldSteps=newfieldSteps
             log.warning("Problem reading fieldSteps")
-        for field in self.smilei.Field().getFields():
+        for field in self.smilei.Field(0).getFields():
             my_button= QCheckBox(field)
             my_button.stateChanged.connect(self.checkBoxChanged)
             self.ui.layoutFields.addWidget(my_button)
@@ -174,7 +175,7 @@ class smileiQtPlot(QWidget):
         
     def reloadAll(self):
         self.smilei=Smilei(self.dirName)
-        self.fieldSteps=self.smilei.Field().getAvailableTimesteps()
+        self.fieldSteps=self.smilei.Field(0).getAvailableTimesteps()
         self.ui.slider.setRange(0,len(self.fieldSteps))
         self.ui.spinStep.setSuffix("/"+str(len(self.fieldSteps)))
         self.ui.spinStep.setMaximum(len(self.fieldSteps))
@@ -195,7 +196,6 @@ class smileiQtPlot(QWidget):
         settings=QSettings(QFileInfo(__file__).fileName(),"")
         log.info("Load settings file: %s"%settings.fileName())
         settings.beginGroup(QDir(self.dirName).dirName())
-        self.restoreGeometry(settings.value("geometry").toByteArray())
         frames=[self.ui.scalars, self.ui.fields, self.ui.phase]
         for frame in [self.ui.scalars, self.ui.fields, self.ui.phase] :
             settings.beginGroup(frame.objectName())            
@@ -209,7 +209,6 @@ class smileiQtPlot(QWidget):
         settings=QSettings(QFileInfo(__file__).fileName(),"")
         log.info("Save settings file: %s"%settings.fileName())
         settings.beginGroup(QDir(self.dirName).dirName())
-        settings.setValue("geometry", self.saveGeometry())
         frames=[self.ui.scalars, self.ui.fields, self.ui.phase]
         for frame in [self.ui.scalars, self.ui.fields, self.ui.phase] :
             settings.beginGroup(frame.objectName())            
@@ -234,11 +233,11 @@ class smileiQtPlot(QWidget):
         self.step=step
         self.doPlots()
     
-    @pyqtSignature("int")
+    @pyqtSlot("int")
     def on_spinStep_valueChanged(self,my_step):
         self.ui.slider.setValue(my_step)
 
-    @pyqtSignature("int")
+    @pyqtSlot("int")
     def changeTab(self, tabNum):
         if self.ui.tabWidget.currentIndex()==0:
             self.doPlots()
@@ -302,7 +301,7 @@ class smileiQtPlot(QWidget):
                     data=[]
                     name=str(i.text())
                     log.info("\tField %s"%name)
-                    data=self.smilei.Field(name).getData()
+                    data=self.smilei.Field(0,name).getData()
                                         
                     self.fieldDict[name]=data
                     
@@ -507,10 +506,6 @@ class smileiQt(QMainWindow):
         super(smileiQt, self).__init__()
 
         settings=QSettings(QFileInfo(__file__).fileName(),"")
-        self.restoreGeometry(settings.value("geometry").toByteArray())
-        self.restoreState(settings.value("windowState").toByteArray())
-    
-        settings.setValue("geometry", self.saveGeometry())
                 
         self.setWindowFlags(self.windowFlags() | Qt.Tool | Qt.Dialog)
 
@@ -558,12 +553,7 @@ class smileiQt(QMainWindow):
         dirName=QFileDialog.getExistingDirectory(self,options=QFileDialog.ShowDirsOnly)
         if not dirName.isEmpty():
             self.addDir(str(dirName))
-    
-    def save_settings(self):
-        settings=QSettings(QFileInfo(__file__).fileName(),"")
-        settings.setValue("geometry", self.saveGeometry())
-        settings.setValue("windowState", self.saveState())
-    
+        
     def closeEvent(self,event):
         self.save_settings()
         for plot in self.plots:

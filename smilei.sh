@@ -96,9 +96,9 @@ for namelist in "${namelist_files[@]}"; do
     cp $namelist $outdir
 done
 cd $outdir
-$MPIEXEC -mca btl tcp,sm,self -np $proc $smilei "${namelists[@]}"
+$MPIEXEC -n $proc $smilei "${namelists[@]}"
 cd $H
 echo "Launching smileiQt.pt $outdir"
-smileiQt.py $outdir
+${DIR}/smileiQt.py $outdir
 
 
