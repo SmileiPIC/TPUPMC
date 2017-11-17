@@ -56,7 +56,7 @@ DiagParticles(
 
 DiagFields(
     every = output_every,
-    fields = ['Jx', 'Rho_eon', 'Ex']
+    fields = ['Jx', 'Rho_eon']
 )
 
 
