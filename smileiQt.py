@@ -40,7 +40,7 @@ from PyQt5.QtGui import *
 from PyQt5 import uic
 from PyQt5.QtWidgets import *
 
-from Smilei import *
+import happi
 import numpy as np
 
 import signal        
@@ -64,7 +64,7 @@ class smileiQtPlot(QWidget):
         self.ui=uic.loadUi(uiFile,self)
         
         self.dirName=dirName
-        self.smilei=Smilei(self.dirName)
+        self.smilei=happi.Open(self.dirName)
         
         self.parent=parent
 
@@ -111,7 +111,7 @@ class smileiQtPlot(QWidget):
 #retrieve stuff from namelist
         self.cell_length=self.smilei.namelist.Main.cell_length[0]
         self.timestep=self.smilei.namelist.Main.timestep
-        self.sim_length=self.smilei.namelist.Main.sim_length
+        self.sim_length=self.smilei.namelist.Main.grid_length
 
 #scalars
         scalarSteps=[]
@@ -152,9 +152,9 @@ class smileiQtPlot(QWidget):
 
 #phase spaces
         i=0
-        # self.smilei.ParticleDiagnostic(0)._type ...
-        for phase in self.smilei.namelist.DiagParticles:
-            if not np.array_equal(self.fieldSteps,self.smilei.ParticleDiagnostic(i).getAvailableTimesteps()): 
+        # self.smilei.ParticleBinning(0)._type ...
+        for phase in self.smilei.namelist.DiagParticleBinning:
+            if not np.array_equal(self.fieldSteps,self.smilei.ParticleBinning(i).getAvailableTimesteps()): 
                 log.warning("Problem reading phaseSteps")
 
             name=str(i)+' '
@@ -330,7 +330,7 @@ class smileiQtPlot(QWidget):
                 if i.isChecked() :
                     name=str(i.text())
                     number=int(name.split(' ')[0])
-                    phase=self.smilei.ParticleDiagnostic(number)
+                    phase=self.smilei.ParticleBinning(number)
                     self.phaseDict[name]=phase.getData()
                    
                     if phase._naxes is not 2:

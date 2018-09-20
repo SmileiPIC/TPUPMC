@@ -94,9 +94,9 @@
   stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
   stringstyle=\color{mymauve},     % string literal style
   tabsize=2,	                   % sets default tabsize to 2 spaces
-  morekeywords={Main,Species,DiagScalar,DiagParticles,DiagFields},
+  morekeywords={Main,Species,DiagScalar,DiagParticleBinning,DiagFields},
   keywordstyle=\color{magenta},
-  keywords=[2]{time_frozen, sim_length, sim_time, nb_density,cell_length,axes},
+  keywords=[2]{time_frozen, grid_length, simulation_time, number_density,cell_length,axes},
   keywordstyle=[2]\color{classcolour},
   keywords=[3]{xnumber,xamplitude},
   keywordstyle=[3]\color{paramcolour}
@@ -280,21 +280,21 @@ In SMILEI, periodic boundary conditions are used to simulate the infinite plasma
 Those values are defined in the \class{Main} part of the namelist:
 \lstinputlisting[linerange=4-14]{TP_proj1.py}
 
-The plasma length is \code{sim\_length}  (in units of $c/\omega_{pe}$), and the time over which the simulation is run (typically a few tens of $\omega_{pe}^{-1}$) is given by \code{sim\_time}. 
+The plasma length is \code{grid\_length}  (in units of $c/\omega_{pe}$), and the time over which the simulation is run (typically a few tens of $\omega_{pe}^{-1}$) is given by \code{simulation\_time}. 
 
-First, the ions are defined as a neutralizing back ground and will not move during the simulation (i.e. their mass can be considered as infinite: \code{time\_frozen} > \code{sim\_time}) and is defined in the \class{Species} (here for the ions):
+First, the ions are defined as a neutralizing back ground and will not move during the simulation (i.e. their mass can be considered as infinite: \code{time\_frozen} > \code{simulation\_time}) and is defined in the \class{Species} (here for the ions):
 \lstinputlisting[linerange=16-27]{TP_proj1.py}
 
-Now, for electrons, we apply a small perturbation on their density (\code{nb\_density}), and will investigate what is the plasma response to such a perturbation.
+Now, for electrons, we apply a small perturbation on their density (\code{number\_density}), and will investigate what is the plasma response to such a perturbation.
 Here, we consider a periodic (cosine) perturbation of the (normalised) electron density:
 \begin{eqnarray}\label{eq_pert}
 n_e(t=0,x) = n_{e0}+n_{e1}(x) = 1 + \delta n\,\cos(k\,x)\,,
 \end{eqnarray}
 where $k$ is the mode of the parturbation and $\delta n$ its amplitude (\param{xamplitude}). 
-In the simulation, what we actually fix are the simulation length $L_{\rm sim}$ (\code{sim\_length}) and the number of modes (see below) $N$ so that $k=2\pi\,N/L_{\rm sim}$.
+In the simulation, what we actually fix are the simulation length $L_{\rm sim}$ (\code{grid\_length}) and the number of modes (see below) $N$ so that $k=2\pi\,N/L_{\rm sim}$.
 
 Which translates in the code below ($N$=\param{xnumber}):
-\lstinputlisting[linerange={29-39}]{TP_proj1.py}
+\lstinputlisting[linerange={28-37}]{TP_proj1.py}
 
 \newpage 
 
@@ -309,9 +309,9 @@ Which translates in the code below ($N$=\param{xnumber}):
 
     \Question{Run the PIC simulation. To do so type \texttt{smilei.sh $\sim$/TPUPMC/TP\_proj1.py}. In the window that appears select diagnostics and choose \texttt{Uelm}, \texttt{Ex}, \texttt{Rho\_eon}, \texttt{jx}, and the phase space diagnostic:
 
-\lstinputlisting[linerange=47-55]{TP_proj1.py}
+\lstinputlisting[linerange=45-53]{TP_proj1.py}
 
-Where \code{axes} is in this case a two component list with 4 values: ``name'', minimum, maximum and number of bins. In the above case we're binning the x-px, thus the first component refers to space coordinate, and second to momentum coordinate. Typically the normalised momentum will be same order of magnitude of the normalised density fluctuations (the quantity \param{xamplitude} in \code{nb\_density}).
+Where \code{axes} is in this case a two component list with 4 values: ``name'', minimum, maximum and number of bins. In the above case we're binning the x-px, thus the first component refers to space coordinate, and second to momentum coordinate. Typically the normalised momentum will be same order of magnitude of the normalised density fluctuations (the quantity \param{xamplitude} in \code{number\_density}).
 
 This will allow you to visualise the electrostatic field energy averaged over space as a function of time,  the electric field, the electron density and the electron current as a function of space and the momentum and position of the particles in the code (phase space) by clicking on \texttt{plot}}.
 
@@ -323,7 +323,7 @@ Notice that we are exciting a stationary wave.
     \Question{Compute analytically the time evolution of the total electrostatic field energy (variable  \texttt{Uelm} in the code):
 $$U_{\rm es}(t) = \int_{0}^{L_{\rm sim}} dx E_x^2(t,x)/2$$
 Plot the corresponding energy from the PIC simulation. Discuss the results: is the oscillation frequency of the energy consistent with the theoretical expectation?}
-    \Question{Increase the number of modes to 2 and 3 in the input file (\param{xnumber} in \code{nb\_density}). Discuss the resulting changes in terms of the characteristic oscillation time.}
+    \Question{Increase the number of modes to 2 and 3 in the input file (\param{xnumber} in \code{number\_density}). Discuss the resulting changes in terms of the characteristic oscillation time.}
     \Question{Go back to mode 1. Increase the number of macro-particles per-cell used for the electron species. What does it change in your simulation? Why?}
 
 \end{ExerciseList}
@@ -357,9 +357,9 @@ As discussed above, the choice of the time interval can affect the precision and
    \Question{How many points describe a period of oscillation for a temporal resolution of $\Delta t = 0.2$}
     \Question{Verify that you are back to 10 particles per cell. Keeping $\Delta t = 0.2$, calculate the correction to the frequency from the formula above.  
     
-    Take in the code $\code{timestep} = 0.2$, $\code{cell\_length} = 0.24$, $\code{sim\_lenght}= 4.8$, and in the \class{DiagParticles} for the second component of \code{axes} \texttt{["px", -0.12, 0.12,100]} (extremes values for the momentum). For the duration of the simulation, it is useful not to have more than 20 oscillations. Deduce the oscillation frequency form the time evolution of the electrostatic energy in the code and compare with the theoretical result. Comment the result.}
+    Take in the code $\code{timestep} = 0.2$, $\code{cell\_length} = 0.24$, $\code{sim\_lenght}= 4.8$, and in the \class{DiagParticleBinning} for the second component of \code{axes} \texttt{["px", -0.12, 0.12,100]} (extremes values for the momentum). For the duration of the simulation, it is useful not to have more than 20 oscillations. Deduce the oscillation frequency form the time evolution of the electrostatic energy in the code and compare with the theoretical result. Comment the result.}
     \Question{Calculate the value of $\Delta t $ such that the Nyquist frequency is equal to the frequency of oscillation of the electrostatic energy. N.B. $\omega_c = 2 \pi \nu_c$. Why do we calculate this value?}
-    \Question{Measure in the code  the time of oscillation of the electrostatic energy for different value of $\Delta t$ (\code{timestep}) and modify \code{cell\_length} accordingly: you need to take care to fulfil the CFL condition in your choice of parameters, e.g. by using $\Delta x = 1.2\,\Delta t$ (note that you also need to modify $\code{sim\_length}=20~\Delta x$). Deduce the oscillation time of the plasma wave, the oscillation frequency of the electrostatic energy, and the oscillation frequency of the of the plasma wave, you can write your results in the table. The maximum value of $\Delta t $ that we will take is $\Delta t = 2.1$ and $\code{sim\_time}=100*2*\texttt{math.pi}$. What happens for this value? Take a longer duration of the simulation if needed.}
+    \Question{Measure in the code  the time of oscillation of the electrostatic energy for different value of $\Delta t$ (\code{timestep}) and modify \code{cell\_length} accordingly: you need to take care to fulfil the CFL condition in your choice of parameters, e.g. by using $\Delta x = 1.2\,\Delta t$ (note that you also need to modify $\code{grid\_length}=20~\Delta x$). Deduce the oscillation time of the plasma wave, the oscillation frequency of the electrostatic energy, and the oscillation frequency of the of the plasma wave, you can write your results in the table. The maximum value of $\Delta t $ that we will take is $\Delta t = 2.1$ and $\code{simulation\_time}=100*2*\texttt{math.pi}$. What happens for this value? Take a longer duration of the simulation if needed.}
     \Question{Make a plot of the oscillation frequency of the plasma wave as a function of $\Delta t$, and discuss the result. }
 \end{ExerciseList}
 
@@ -376,10 +376,10 @@ As discussed above, the choice of the time interval can affect the precision and
   \Exercise[title={Effect of the spatial resolution and aliasing effect},label={ex4}] \leavevmode
 
     \ExeText{In this exercise we will fix $\Delta t = 0.01$, the plasma size to $1.$, the cell size to $0.02$, 
- in the \class{DiagParticles} take the second value of  the first component of \code{axes} = 1. (maximum value for the position/plasma length), and for the the second component of \code{axes} : \texttt{["px", -0.02, 0.02, 100]} (extremes values for the momentum). 
-Vary the wave vector $k$ by varying the quantity \param{xnumber} in \code{nb\_density}, since the  wave-number $k$ is defined as :
+ in the \class{DiagParticleBinning} take the second value of  the first component of \code{axes} = 1. (maximum value for the position/plasma length), and for the the second component of \code{axes} : \texttt{["px", -0.02, 0.02, 100]} (extremes values for the momentum). 
+Vary the wave vector $k$ by varying the quantity \param{xnumber} in \code{number\_density}, since the  wave-number $k$ is defined as :
 \begin{equation*}
-k = {\rm \param{xnumber}} \frac{2\pi}{\rm \code{sim\_length}}\,.
+k = {\rm \param{xnumber}} \frac{2\pi}{\rm \code{grid\_length}}\,.
 \end{equation*}
 }
 
@@ -453,7 +453,7 @@ I\caption{Two stream instability}
 Here, $\delta n = 10^{-2}$ is the amplitude of the perturbation and $k$ its mode.
 As periodic conditions allow us for simulating an infinite plasma, and taking $n=1$ mode  (in the input file, see Proj.~\ref{proj1}), the wave-number $k$ is directly linked to the length of the simulation box by:
 \begin{eqnarray}\label{eq_k}
-k = \frac{2\pi\,n}{\code{sim\_length}}\,.
+k = \frac{2\pi\,n}{\code{grid\_length}}\,.
 \end{eqnarray}
 
 
@@ -509,10 +509,10 @@ If not, set the density perturbation $\delta n = 0.001$.
 \vspace{0.5cm}
   \Exercise[title={Simulation for $v_0 k > 1$},label={ex7}] \leavevmode
 
-    \Question{Compute the value of \code{sim\_length} corresponding to the limit between the stable and unstable solutions.}
+    \Question{Compute the value of \code{grid\_length} corresponding to the limit between the stable and unstable solutions.}
      
-    \Question{Compute the values of $v_0 k$ corresponding to different values of $k$ using  \code{sim\_length} $= 0.62, 0.60, 0.31, 0.16$. Calculate the corresponding values of $\omega$ from Eq. \ref{eqomega}.}
-    \Question{Run the corresponding simulations.  For the phase-space diagnostics, in the input file \texttt{TP\_proj2.py}. For simulations with \code{sim\_length} $= 0.62$ and $0.60$, extract from the field energy temporal evolution the characteristic frequencies (try to estimate error bars for your measurements). Report them on the analytical predictions (from Exercise \ref{ex6}). Why does it become more difficult to extract the characteristic frequencies for \code{sim\_length}~$= 0.31 - 0.16$ ?}
+    \Question{Compute the values of $v_0 k$ corresponding to different values of $k$ using  \code{grid\_length} $= 0.62, 0.60, 0.31, 0.16$. Calculate the corresponding values of $\omega$ from Eq. \ref{eqomega}.}
+    \Question{Run the corresponding simulations.  For the phase-space diagnostics, in the input file \texttt{TP\_proj2.py}. For simulations with \code{grid\_length} $= 0.62$ and $0.60$, extract from the field energy temporal evolution the characteristic frequencies (try to estimate error bars for your measurements). Report them on the analytical predictions (from Exercise \ref{ex6}). Why does it become more difficult to extract the characteristic frequencies for \code{grid\_length}~$= 0.31 - 0.16$ ?}
     \Question{ Discuss the general behaviour of 
         \begin{enumerate}
     \item the energy in the electrostatic field,
@@ -525,8 +525,8 @@ If not, set the density perturbation $\delta n = 0.001$.
 \vspace{0.5cm}
   \Exercise[title={Simulation for {$v_0 k < 1$}},label={ex8}] \leavevmode
 
-    \Question{Compute the values of $v_0 k$ corresponding to \code{sim\_length} $= 0.69 - 1.03 - 1.68$. Calculate the corresponding values of $\omega$ and $\gamma$ from Eq. \ref{eqomega}.}
-    \Question{Run the corresponding simulations. For the phase-space diagnostics, in the input file \texttt{TP\_proj2.py},  take for the extremes values of the momentum in \class{DiagParticles} section (i.e.\ the  \texttt{"px"}  part of the \code{axes})   to $\pm 0.4$, respectively. For each simulation (i.e. for different value of the parameter $v_0 k$), extract from the field energy temporal evolution the characteristic frequency and growth rate of the instability (it is convenient to consider the energy plot in log-scale. To do so, just type on the corresponding panel and letter `l'). Report them on the analytical predictions (from Exercise \ref{ex6}).}
+    \Question{Compute the values of $v_0 k$ corresponding to \code{grid\_length} $= 0.69 - 1.03 - 1.68$. Calculate the corresponding values of $\omega$ and $\gamma$ from Eq. \ref{eqomega}.}
+    \Question{Run the corresponding simulations. For the phase-space diagnostics, in the input file \texttt{TP\_proj2.py},  take for the extremes values of the momentum in \class{DiagParticleBinning} section (i.e.\ the  \texttt{"px"}  part of the \code{axes})   to $\pm 0.4$, respectively. For each simulation (i.e. for different value of the parameter $v_0 k$), extract from the field energy temporal evolution the characteristic frequency and growth rate of the instability (it is convenient to consider the energy plot in log-scale. To do so, just type on the corresponding panel and letter `l'). Report them on the analytical predictions (from Exercise \ref{ex6}).}
     \Question{For each simulation, discuss the general behaviour of 
     \begin{enumerate}
     \item the energy in the electrostatic field,

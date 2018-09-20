@@ -5,54 +5,51 @@ amplitude=0.001
 length = 1.68
 
 Main(
-    geometry = "1d3v",
+    geometry = "1Dcartesian",
     interpolation_order = 2,
-    sim_time = 10.0*2*math.pi,
+    simulation_time = 10.0*2*math.pi,
     timestep = 0.01,
-    sim_length  = [length],
+    grid_length = [length],
     cell_length = [length/32],
     number_of_patches = [ 1 ],
     print_every = output_every,
-    bc_em_type_x = ['periodic'],
-    poisson_iter_max=0
+    EM_boundary_conditions = [['periodic']],
+    poisson_max_iteration=0
 )
 
 Species(
-    species_type = 'ion',
-    initPosition_type = 'regular',
-    initMomentum_type = 'cold',
-    n_part_per_cell = n_part,
+    name = 'ion',
+    number_density = 1.0,
+    position_initialization = 'regular',
+    momentum_initialization = 'cold',
+    particles_per_cell = n_part,
     mass = 1836.0,
     charge = 1.0,
-    nb_density = 1.0,
     time_frozen = 10000.0,
-    bc_part_type_xmin = "none",
-    bc_part_type_xmax = "none"
+    boundary_conditions = [['periodic']]
 )
 
 Species(
-    species_type = "eon1",
-    initPosition_type = "regular",
-    initMomentum_type = "cold",
-    n_part_per_cell = n_part/2,
+    name = "eon1",
+    position_initialization = "regular",
+    momentum_initialization = "cold",
+    particles_per_cell = n_part/2,
     mass = 1.0,
     charge = -1.0,
-    nb_density = cosine(0.5,xamplitude=amplitude,xnumber=1),
-    bc_part_type_xmin = "none",
-    bc_part_type_xmax = "none",
+    number_density = cosine(0.5,xamplitude=amplitude,xnumber=1),
+    boundary_conditions = [['periodic']],
     mean_velocity = [velocity, 0, 0] 
 )
 
 Species(
-    species_type = "eon2",
-    initPosition_type = "regular",
-    initMomentum_type = "cold",
-    n_part_per_cell = n_part/2,
+    name = "eon2",
+    position_initialization = "regular",
+    momentum_initialization = "cold",
+    particles_per_cell = n_part/2,
     mass = 1.0,
     charge = -1.0,
-    nb_density = cosine(0.5,xamplitude=amplitude,xnumber=1),
-    bc_part_type_xmin = "none",
-    bc_part_type_xmax = "none",
+    number_density = cosine(0.5,xamplitude=amplitude,xnumber=1),
+    boundary_conditions = [['periodic']],
     mean_velocity = [-velocity, 0, 0] 
 )
 
@@ -62,8 +59,8 @@ DiagScalar (
     vars = ['Utot', 'Ukin', 'Uelm', 'Ukin_eon1', 'Ukin_eon2', 'Uelm_Ex']
 )
  
-DiagParticles(
-    output = "density",
+DiagParticleBinning(
+    deposited_quantity = "weight",
     every = output_every,
     species = ['eon1', 'eon2'],
     axes = [
