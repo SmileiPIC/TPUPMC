@@ -96,7 +96,7 @@
   tabsize=2,	                   % sets default tabsize to 2 spaces
   morekeywords={Main,Species,DiagScalar,DiagParticleBinning,DiagFields},
   keywordstyle=\color{magenta},
-  keywords=[2]{time_frozen, grid_length, simulation_time, number_density,cell_length,axes},
+  keywords=[2]{time_frozen, grid_length, simulation_time, number_density,cell_length,axes, particles_per_cell, timestep},
   keywordstyle=[2]\color{classcolour},
   keywords=[3]{xnumber,xamplitude},
   keywordstyle=[3]\color{paramcolour}
@@ -157,20 +157,20 @@
 \hrule
 \vspace*{20pt}
 
-These exercises are  intended as an introduction to plasma physics through Particle-in-cell (PIC) simulation.
+These exercises are  intended as an introduction to plasma physics through Particle-in-cell (PIC) simulations.
 
-The code used is called SMILEI and is currently developed at LULI in collaboration with various laboratories 
+The code used is Smilei and is currently developed at LULI in collaboration with various laboratories 
 
 
 %\begin{center}
-%\includegraphics[width=0.5\textwidth]{smileiLogo.pdf}
+%\includegraphics[width=0.5\textwidth]{SmileiLogo.pdf}
 %\end{center}
 
 \tableofcontents
 \subsection*{Links:}
 \begin{tabularx}{0.95\textwidth}{rl}
 These notes: & \url{https://github.com/SmileiPIC/TPUPMC} \\
-Smilei homepage: & \url{http://www.maisondelasimulation.fr/smilei}\\
+Smilei homepage: & \url{https://Smileipic.github.io/Smilei}\\
 Smilei download: &\url{https://github.com/SmileiPIC/Smilei}
 \end{tabularx}
 
@@ -181,9 +181,9 @@ Smilei download: &\url{https://github.com/SmileiPIC/Smilei}
 \newpage
 \addsection{Introduction}\label{intro}
 
-\addsubsection{The Particle-In-Cell code SMILEI}
+\addsubsection{The Particle-In-Cell code Smilei}
 
-SMILEI is a Particle-In-Cell (PIC) code initially developed to study laser-plasma interaction at extreme intensities. 
+Smilei is a Particle-In-Cell (PIC) code initially developed to study laser-plasma interaction at extreme intensities. 
 The PIC method aims at solving the Maxwell-Vlasov system of  equations~\cite{birdsall_langdon}.
 
 The electromagnetic fields ($\vE,\vB$) are described on a (here cartesian) grid, and Maxwell's equations:
@@ -240,7 +240,7 @@ T_s &=& C_s n_s^{\gamma_s-1}
 
 \addsubsection{Normalizations}
 
-The PIC code SMILEI is an electromagnetic PIC code. As such, it solves Maxwell's equations in which a characteristic velocity, that of light $c = (\epsilon_0 \mu_0)^{-1/2}$ appears. It is therefore natural to normalise velocities in the code to $c$. Similarly, it is interesting to normalise the charge of all particles in the plasma to $e$ (with $-e$ the charge of the electron) and all masses to $m_e$ the electron mass.
+The PIC code Smilei is an electromagnetic PIC code. As such, it solves Maxwell's equations in which a characteristic velocity, that of light $c = (\epsilon_0 \mu_0)^{-1/2}$ appears. It is therefore natural to normalise velocities in the code to $c$. Similarly, it is interesting to normalise the charge of all particles in the plasma to $e$ (with $-e$ the charge of the electron) and all masses to $m_e$ the electron mass.
 
 To proceed with our normalization, we now need to define a characteristic time. When considering a plasma density with constant density $n_{e0} = Z\,n_{i0}$ ($Z$ being the charge state of one ion in the plasma), a characteristic frequency arises that is the so-called electron-plasma frequency $\omega_{pe} = \sqrt{e^2 n_{e0}/(\epsilon_0 m_e)}$. Hence, we will now normalise times to $\omega_{pe}^{-1}$.
 
@@ -275,14 +275,14 @@ To do so, we consider a plasma with an initial  constant density $n_{e0} = Z\,n_
 We also fix $n_{e0}=1$ such that times are now normalised to $\omega_{pe}^{-1}$, distances to $c/\omega_{pe}$ and so forth.
 
 In addition, we will consider the simplest case of a one-dimensional in space (1D) infinite -~and initially cold~- plasma.
-In SMILEI, periodic boundary conditions are used to simulate the infinite plasma.
+In Smilei, periodic boundary conditions are used to simulate the infinite plasma.
 
 Those values are defined in the \class{Main} part of the namelist:
 \lstinputlisting[linerange=4-14]{TP_proj1.py}
 
-The plasma length is \code{grid\_length}  (in units of $c/\omega_{pe}$), and the time over which the simulation is run (typically a few tens of $\omega_{pe}^{-1}$) is given by \code{simulation\_time}. 
+The plasma length is \code{grid\_length}  (in units of $c/\omega_{pe}$) and the time over which the simulation is run (typically a few tens of $\omega_{pe}^{-1}$) is given by \code{simulation\_time}. 
 
-First, the ions are defined as a neutralizing back ground and will not move during the simulation (i.e. their mass can be considered as infinite: \code{time\_frozen} > \code{simulation\_time}) and is defined in the \class{Species} (here for the ions):
+First, the ions are defined as a neutralising back ground and will not move during the simulation (i.e. their mass can be considered as infinite: \code{time\_frozen} > \code{simulation\_time}) and is defined in the \class{Species} (here for the ions):
 \lstinputlisting[linerange=16-27]{TP_proj1.py}
 
 Now, for electrons, we apply a small perturbation on their density (\code{number\_density}), and will investigate what is the plasma response to such a perturbation.
@@ -294,7 +294,7 @@ where $k$ is the mode of the parturbation and $\delta n$ its amplitude (\param{x
 In the simulation, what we actually fix are the simulation length $L_{\rm sim}$ (\code{grid\_length}) and the number of modes (see below) $N$ so that $k=2\pi\,N/L_{\rm sim}$.
 
 Which translates in the code below ($N$=\param{xnumber}):
-\lstinputlisting[linerange={28-37}]{TP_proj1.py}
+\lstinputlisting[linerange={28-38}]{TP_proj1.py}
 
 \newpage 
 
@@ -302,29 +302,29 @@ Which translates in the code below ($N$=\param{xnumber}):
 \vspace{0.5cm}
   \Exercise[title={Simulations of electron-plasma oscillations},label={ex2}] \leavevmode
     \Question{\label{q2_1}In the limit of small perturbations (i.e.\ $\delta n \ll 1$ in Eq.~\ref{eq_pert}), derive analytically the equation for $n_e(t,x)$ for the case of a cold plasma with immobile ions.   What is the theoretical frequency of plasma oscillations in normalised units? Write the solution for the density perturbation $n_{e1}(x,t)$ in the form of a stationary wave with an arbitrary phase}
-    \Question{Derive the relationship between $n_{e1}(t,x)$, $u_{e1,x}(t,x)$ and $E_{1,x}(t,x)$ from the linearised  fluid equation system, for a cold plasma, including Maxwell's equations.}
+    \Question{\label{q2_2}Derive the relationship between $n_{e1}(t,x)$, $u_{e1,x}(t,x)$ and $E_{1,x}(t,x)$ from the linearised  fluid equation system, for a cold plasma, including Maxwell's equations.}
     \Question{In the initial set up the plasma macro-particles  can be uniformly distributed over the whole plasma length. Let us say that the interval between two near neighbours is given by  $x_{0a}-x_{0b}$, then   the equilibrium density is given by  $n_{e0} = \frac{1}{(x_{0a}-x_{0b})}$. A small perturbation $\delta x$  corresponds to a particle displacement and to a new position  $x = x_0 +  \delta x$. At time $t=0$ we initialize the system with a small perturbation and we can deduce the corresponding initial density  $n_e(x,t=0)= \frac{1}{(x_{a}-x_{b})}$. For a small perturbation we can write  $n_e(x,t=0)=n_{e0}+n_{e1}(x)$. Derive  $n_{e1}(x)$ in the limit  $\delta x << (x0a-x0b)$. If we take  $\delta x = x_1 \sin(kx +\varphi)$, what is the form of $n_{e1}(x)$?}
 
-    \Question{Add to the code namelist  \texttt{TPUPMC/TP\_proj1.py}  the missing diagnostic electric field (\texttt{'Ex'}).}
+    \Question{\label{q2_5}Edit the code namelist  \texttt{xed $\sim$/TPUPMC/TP\_proj1.py}  and add the missing diagnostic electric field (\texttt{'Ex'}) in the \class{DiagFields}}
 
-    \Question{Run the PIC simulation. To do so type \texttt{smilei.sh $\sim$/TPUPMC/TP\_proj1.py}. In the window that appears select diagnostics and choose \texttt{Uelm}, \texttt{Ex}, \texttt{Rho\_eon}, \texttt{jx}, and the phase space diagnostic:
+    \Question{To run the PIC simulation, type \texttt{Smilei.sh $\sim$/TPUPMC/TP\_proj1.py}. The code will run and you will see the text output. Then, in the window that appears select diagnostics and choose \texttt{Uelm}, \texttt{Ex}, \texttt{Rho\_eon}, \texttt{jx}, and the phase space diagnostic (in the code this can be achieved with a \class{DiagParticleBinning}):
 
 \lstinputlisting[linerange=45-53]{TP_proj1.py}
 
-Where \code{axes} is in this case a two component list with 4 values: ``name'', minimum, maximum and number of bins. In the above case we're binning the x-px, thus the first component refers to space coordinate, and second to momentum coordinate. Typically the normalised momentum will be same order of magnitude of the normalised density fluctuations (the quantity \param{xamplitude} in \code{number\_density}).
+Where \code{axes} is in this case a two component list with 4 values:  \texttt{"name"}, minimum, maximum and number of bins. In the above case we're binning the x-px, thus the first component refers to space coordinate, and second to momentum coordinate. Typically the normalised momentum will be same order of magnitude of the normalised density fluctuations (the quantity \param{xamplitude} in \code{number\_density} of \class{Species}).
 
-This will allow you to visualise the electrostatic field energy averaged over space as a function of time,  the electric field, the electron density and the electron current as a function of space and the momentum and position of the particles in the code (phase space) by clicking on \texttt{plot}}.
+This will allow you to visualise the electrostatic field energy averaged over space as a function of time,  the electric field, the electron density and the electron current as a function of space and the momentum and position of the particles in the code (phase space) by clicking on the \texttt{plot} tab}.
 
     \Question{How is perturbed electron current $j_{1,x}$ related to the variable $u_{e1,x}(t,x)$?}
 
 Notice that we are exciting a stationary wave. 
 
-    \Question{From the simulations, deduce the explicit form of $n_{e1}(x,t)$ (i.e. by considering  $\delta n = \delta n_0 \sin (kx+\phi) \cos (\omega t)$ ) equation and the simulation results deduce the actual value of the arbitrary phase introduced in question (\ref{ex2}.\ref{q2_1})) and discuss the wave evolution in time. What is the characteristic time for the electric field oscillations (in normalised as well as physical units)? What about density oscillations? What is the relative phase between the electric field and density oscillations?  Are results consistent with theoretical predictions from exercise (\ref{ex2}.1) and (\ref{ex2}.2)?}
+    \Question{From the simulations, deduce the explicit form of $n_{e1}(x,t)$ (i.e. by considering  $\delta n = \delta n_0 \sin (kx+\phi) \cos (\omega t)$) equation and the simulation results deduce the actual value of the arbitrary phase introduced in question (\ref{ex2}.\ref{q2_1})) and discuss the wave evolution in time. What is the characteristic time for the electric field oscillations (in normalised as well as physical units)? What about density oscillations? What is the relative phase between the electric field and density oscillations?  Are results consistent with theoretical predictions from exercise (\ref{ex2}.\ref{q2_1}) and (\ref{ex2}.\ref{q2_2})?}
     \Question{Compute analytically the time evolution of the total electrostatic field energy (variable  \texttt{Uelm} in the code):
 $$U_{\rm es}(t) = \int_{0}^{L_{\rm sim}} dx E_x^2(t,x)/2$$
 Plot the corresponding energy from the PIC simulation. Discuss the results: is the oscillation frequency of the energy consistent with the theoretical expectation?}
-    \Question{Increase the number of modes to 2 and 3 in the input file (\param{xnumber} in \code{number\_density}). Discuss the resulting changes in terms of the characteristic oscillation time.}
-    \Question{Go back to mode 1. Increase the number of macro-particles per-cell used for the electron species. What does it change in your simulation? Why?}
+    \Question{Increase the number of modes to 2 and 3 in the input file (\param{xnumber} in \code{number\_density} of \class{Species}). Discuss the resulting changes in terms of the characteristic oscillation time.}
+    \Question{Go back to mode 1. Increase the number of macro-particles per-cell used for the electron species \\(\param{particles\_per\_cell}). What does it change in your simulation? Why?}
 
 \end{ExerciseList}
 
@@ -335,7 +335,7 @@ Plot the corresponding energy from the PIC simulation. Discuss the results: is t
 As we are dealing with numerical simulation, the algorithms used require to be stable to fulfil some well-defined conditions:\\
 
 \begin{itemize}
-\item The FDTD method used to solve Maxwell's equations in SMILEI requires the Courant-Friedrichs-Lewy (CFL) condition to be fulfilled. Basically, this condition states that the time-step $\Delta t$ should be short enough for the information on one cell not to be transported (at the light velocity) further away than one spatial-step $\Delta x$. In 1D, this condition simply requires that $c\,\Delta t < \Delta x$ (i.e. one has to take a value of \code{time\_step} in our simulation (normalised) input file always smaller than \code{cell\_length}). Keep this in mind when changing the time-step in the simulations.
+\item The FDTD method used to solve Maxwell's equations in Smilei requires the Courant-Friedrichs-Lewy (CFL) condition to be fulfilled. Basically, this condition states that the time-step $\Delta t$ should be short enough for the information on one cell not to be transported (at the light velocity) further away than one spatial-step $\Delta x$. In 1D, this condition simply requires that $c\,\Delta t < \Delta x$ (i.e. one has to take a value of \code{timestep} in our simulation (normalised) input file always smaller than \code{cell\_length}). Keep this in mind when changing the time-step in the simulations.
 \item  The leap-frog scheme that is used to solve the particle equations of motion also requires the time-step to fulfill the condition: $\Delta t < 2$. If this conditions is not fulfilled, the leap-frog scheme becomes unstable.
 Moreover even in the limit of small (non normalised) $\Delta t^\prime$ we introduce an error in the frequency calculation, given by 
 $$\omega = \omega_0  [1+ (\omega_0 \Delta t^\prime/2 )^2/6+... ]$$
@@ -357,7 +357,7 @@ As discussed above, the choice of the time interval can affect the precision and
    \Question{How many points describe a period of oscillation for a temporal resolution of $\Delta t = 0.2$}
     \Question{Verify that you are back to 10 particles per cell. Keeping $\Delta t = 0.2$, calculate the correction to the frequency from the formula above.  
     
-    Take in the code $\code{timestep} = 0.2$, $\code{cell\_length} = 0.24$, $\code{sim\_lenght}= 4.8$, and in the \class{DiagParticleBinning} for the second component of \code{axes} \texttt{["px", -0.12, 0.12,100]} (extremes values for the momentum). For the duration of the simulation, it is useful not to have more than 20 oscillations. Deduce the oscillation frequency form the time evolution of the electrostatic energy in the code and compare with the theoretical result. Comment the result.}
+    Take in the code $\code{timestep} = 0.2$, $\code{cell\_length} = 0.24$, $\code{grid\_length}= 4.8$, and in the \\\class{DiagParticleBinning} for the second component of \code{axes} \texttt{["px", -0.12, 0.12,100]} (extremes values for the momentum). For the duration of the simulation, it is useful not to have more than 20 oscillations. Deduce the oscillation frequency form the time evolution of the electrostatic energy in the code and compare with the theoretical result. Comment the result.}
     \Question{Calculate the value of $\Delta t $ such that the Nyquist frequency is equal to the frequency of oscillation of the electrostatic energy. N.B. $\omega_c = 2 \pi \nu_c$. Why do we calculate this value?}
     \Question{Measure in the code  the time of oscillation of the electrostatic energy for different value of $\Delta t$ (\code{timestep}) and modify \code{cell\_length} accordingly: you need to take care to fulfil the CFL condition in your choice of parameters, e.g. by using $\Delta x = 1.2\,\Delta t$ (note that you also need to modify $\code{grid\_length}=20~\Delta x$). Deduce the oscillation time of the plasma wave, the oscillation frequency of the electrostatic energy, and the oscillation frequency of the of the plasma wave, you can write your results in the table. The maximum value of $\Delta t $ that we will take is $\Delta t = 2.1$ and $\code{simulation\_time}=100*2*\texttt{math.pi}$. What happens for this value? Take a longer duration of the simulation if needed.}
     \Question{Make a plot of the oscillation frequency of the plasma wave as a function of $\Delta t$, and discuss the result. }
@@ -406,8 +406,8 @@ We will now investigate the changes brought by taking a large amplitude for the 
 \vspace{0.5cm}
   \Exercise[title={Kinetic effects for large amplitude plasma oscillations},label={ex5}] \leavevmode
 
-    \Question{In the conditions of exercise \ref{ex2}, (e.g. length 1., cell size 0.02, time step 0.01 and $\delta n = 0.01$) plot the electron phase-space ($x,p_x$). Does this bring any additional information as compared to the fluid description? Justify your answer.}
-    \Question{Now, increase the amplitude of the density perturbation to $\delta n = 0.5$ and reduce the time step to $\Delta t =  10^{-3}$ and the cell size accordingly. Check  the electron phase-space ($x,p_x$). (Note that you may have to increase the minimum and maximum value of the momentum when defining the phase-space diagnostics in the input file, parameters 'mom\_min' and 'mom\_max'.) Discuss what you observed: 
+    \Question{In the conditions of exercise \ref{ex2}, (e.g. \code{grid\_length}=1., \code{cell\_length}=0.02, \code{timestep}=0.01 and $\delta n = 0.01$) plot the electron phase-space ($x,p_x$). Does this bring any additional information as compared to the fluid description? Justify your answer.}
+    \Question{Now, increase the amplitude of the density perturbation to $\delta n = 0.5$ and reduce the time step to $\Delta t =  10^{-3}$ and the cell size accordingly. Check  the electron phase-space ($x,p_x$). (Note that you may have to increase the minimum and maximum value of the momentum when defining the phase-space diagnostics in the input file, parameters of the maximum and minimum momentum of the binning, see Exercise \ref{ex2}.\ref{q2_5}). Discuss what you observed: 
     \begin{itemize}
     \item does the kinetic description brings more information that the linearised fluid approach? 
     \item What about the temporal evolution of the electrostatic field energy?
@@ -432,7 +432,7 @@ We will now investigate the changes brought by taking a large amplitude for the 
 
 This second project aims at illustrating the so-called two-stream instability.
 To do so, we consider a 1D infinite plasma with averaged constant density $n_{e0} = 1$. 
-In SMILEI, this is simulated by considering periodic boundary conditions in the x-direction. 
+In Smilei, this is simulated by considering periodic boundary conditions in the x-direction. 
 To create the two streams, we consider two electron species with initially opposite mean-velocities $v_{\pm} = \pm v_0$ (with $v_0 = 0.1$ in units of the light velocity) in the x-direction.
 Each species (labelled $+$ and $-$ depending on the direction of their mean-velocity) is then initialized such that:
 \begin{eqnarray*}
@@ -446,7 +446,7 @@ n_e^+(t=0,x) = n_e^-(t=0,x) = \frac{n_{e0}}{2}\,\left[1 + \delta n\,\cos(k\,x)\r
 \begin{wrapfigure}[15]{r}{0.4\textwidth}
 \def\svgwidth{\linewidth}
 \input{Fig_2stream.pdf_tex}
-I\caption{Two stream instability}
+\caption{Two stream instability}
 \label{Fig_2stream}
 \end{wrapfigure}
 
@@ -498,7 +498,7 @@ What do $\omega$ and $\gamma$ stand for? }
 
 \addsubsection{Numerical simulation of the 2-stream instability}
 
-We will now perform numerical simulation using the PIC code SMILEI for different values of $v_0 k$.
+We will now perform numerical simulation using the PIC code Smilei for different values of $v_0 k$.
 As discussed above, we take $v_0=10^{-1}$ which ensures that relativistic effects can be neglected.
 In addition, we use periodic boundary conditions, so that $k$ is uniquely defined by the simulation length using Eq.~\eqref{eq_k}.
 The input file to start these simulation is given in the file \texttt{TPUPMC/TP\_proj2.py}.
@@ -526,7 +526,7 @@ If not, set the density perturbation $\delta n = 0.001$.
   \Exercise[title={Simulation for {$v_0 k < 1$}},label={ex8}] \leavevmode
 
     \Question{Compute the values of $v_0 k$ corresponding to \code{grid\_length} $= 0.69 - 1.03 - 1.68$. Calculate the corresponding values of $\omega$ and $\gamma$ from Eq. \ref{eqomega}.}
-    \Question{Run the corresponding simulations. For the phase-space diagnostics, in the input file \texttt{TP\_proj2.py},  take for the extremes values of the momentum in \class{DiagParticleBinning} section (i.e.\ the  \texttt{"px"}  part of the \code{axes})   to $\pm 0.4$, respectively. For each simulation (i.e. for different value of the parameter $v_0 k$), extract from the field energy temporal evolution the characteristic frequency and growth rate of the instability (it is convenient to consider the energy plot in log-scale. To do so, just type on the corresponding panel and letter `l'). Report them on the analytical predictions (from Exercise \ref{ex6}).}
+    \Question{Run the corresponding simulations. For the phase-space diagnostics, in the input file \texttt{TP\_proj2.py},  take for the extremes values of the momentum in \class{DiagParticleBinning} section (i.e.\ the  \texttt{"px"}  part of the \code{axes})   to $\pm 0.4$, respectively. For each simulation (i.e. for different value of the parameter $v_0 k$), extract from the field energy temporal evolution the characteristic frequency and growth rate of the instability (it is convenient to consider the energy plot in log-scale. To do so, just type on the corresponding panel the letter L). Report them on the analytical predictions (from Exercise \ref{ex6}).}
     \Question{For each simulation, discuss the general behaviour of 
     \begin{enumerate}
     \item the energy in the electrostatic field,
@@ -550,7 +550,7 @@ If not, set the density perturbation $\delta n = 0.001$.
 %  REFERENCES  %
 %%%%%%%%%%%%%%%%
 \newpage
-\addsection{SMILEI namelists}
+\addsection{Smilei namelists}
 
 \addsubsection{\small\texttt{TP\_proj1.py}}
 \lstinputlisting{TP_proj1.py}
