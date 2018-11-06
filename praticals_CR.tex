@@ -244,6 +244,22 @@ The PIC code Smilei is an electromagnetic PIC code. As such, it solves Maxwell's
 
 To proceed with our normalization, we now need to define a characteristic time. When considering a plasma density with constant density $n_{e0} = Z\,n_{i0}$ ($Z$ being the charge state of one ion in the plasma), a characteristic frequency arises that is the so-called electron-plasma frequency $\omega_{pe} = \sqrt{e^2 n_{e0}/(\epsilon_0 m_e)}$. Hence, we will now normalise times to $\omega_{pe}^{-1}$.
 
+\addsubsection{Technical information: running the code}
+
+In this practicals, you will need to run some computer simulations. The code Smilei is located in the home ($\sim$\texttt{/Smilei}). It has already been compiled and installed on the computer you're using. The documentation has been built. This means you don't need to concentrate on the code itself but on the physics.
+
+The code input lists for these 2 exercises and this text is located in \texttt{$\sim$/TPUPMC}. Symbolic link to these files are located on the desktop as well as the code documentation (file \texttt{index.html})
+
+To analyse the data and plot the results you will get from the simulations we provide a processing interface written in python (\texttt{$\sim$/TPUPMC/smileiQt.py}). Again, concentrate on the physics!
+
+To run the simulation and automatically launch the post processing interface, we provide a script \texttt{tpupmc.sh}. To do so, you just need to type:
+
+\texttt{tpupmc.sh $\sim$/TPUPMC/TP\_proj1.py}
+or 
+\texttt{tpupmc.sh $\sim$/TPUPMC/TP\_proj2.py}
+
+The code will run and you will see the text output and then the post processing window will appear ad you'll be able to analyse your data. 
+
 \begin{ExerciseList}
 \vspace{0.5cm}
   \Exercise[title={Normalizations},label={ex1}] \leavevmode
@@ -264,10 +280,8 @@ To proceed with our normalization, we now need to define a characteristic time. 
 
 This first project aims at illustrating a central mechanism of plasma physics, the so-called electron plasma oscillations.
 
-The code input file for this simulation are available in the file \texttt{TPUPMC/TP\_proj1.py} and reproduced in annex of this document.
+The code input file for this simulation are available in the file \texttt{$\sim$/TPUPMC/TP\_proj1.py} and reproduced in annex of this document.
 Here, we just reproduce the sections relating to the definition of the main simulation parameters the species an their density profiles.
-
-To edit the file, open the directory  \texttt{TPUPMC}(a link is on the desktop)  and double-click on the file  \texttt{TP\_proj1.py} 
 
 \addsubsection{Initial set-up}
 To do so, we consider a plasma with an initial  constant density $n_{e0} = Z\,n_{i0}$ (equilibrium solution).
@@ -303,11 +317,11 @@ Which translates in the code below ($N$=\param{xnumber}):
   \Exercise[title={Simulations of electron-plasma oscillations},label={ex2}] \leavevmode
     \Question{\label{q2_1}In the limit of small perturbations (i.e.\ $\delta n \ll 1$ in Eq.~\ref{eq_pert}), derive analytically the equation for $n_e(t,x)$ for the case of a cold plasma with immobile ions.   What is the theoretical frequency of plasma oscillations in normalised units? Write the solution for the density perturbation $n_{e1}(x,t)$ in the form of a stationary wave with an arbitrary phase}
     \Question{\label{q2_2}Derive the relationship between $n_{e1}(t,x)$, $u_{e1,x}(t,x)$ and $E_{1,x}(t,x)$ from the linearised  fluid equation system, for a cold plasma, including Maxwell's equations.}
-    \Question{In the initial set up the plasma macro-particles  can be uniformly distributed over the whole plasma length. Let us say that the interval between two near neighbours is given by  $x_{0a}-x_{0b}$, then   the equilibrium density is given by  $n_{e0} = \frac{1}{(x_{0a}-x_{0b})}$. A small perturbation $\delta x$  corresponds to a particle displacement and to a new position  $x = x_0 +  \delta x$. At time $t=0$ we initialize the system with a small perturbation and we can deduce the corresponding initial density  $n_e(x,t=0)= \frac{1}{(x_{a}-x_{b})}$. For a small perturbation we can write  $n_e(x,t=0)=n_{e0}+n_{e1}(x)$. Derive  $n_{e1}(x)$ in the limit  $\delta x << (x0a-x0b)$. If we take  $\delta x = x_1 \sin(kx +\varphi)$, what is the form of $n_{e1}(x)$?}
+    \Question{In the initial set up the plasma macro-particles  can be uniformly distributed over the whole plasma length. Let us say that the interval between two near neighbours is given by  $x_{0a}-x_{0b}$, then   the equilibrium density is given by  $n_{e0} = \frac{1}{(x_{0a}-x_{0b})}$. A small perturbation $\delta x$  corresponds to a particle displacement and to a new position  $x = x_0 +  \delta x$. At time $t=0$ we initialize the system with a small perturbation and we can deduce the corresponding initial density  $n_e(x,t=0)= \frac{1}{(x_{a}-x_{b})}$. For a small perturbation we can write  $n_e(x,t=0)=n_{e0}+n_{e1}(x)$. Derive  $n_{e1}(x)$ in the limit  $\delta x << x_{0a}-x_{0b}$. If we take  $\delta x = x_1 \sin(kx +\varphi)$, what is the form of $n_{e1}(x)$?}
 
     \Question{\label{q2_5}Edit the code namelist  \texttt{xed $\sim$/TPUPMC/TP\_proj1.py}  and add the missing diagnostic electric field (\texttt{'Ex'}) in the \class{DiagFields}}
 
-    \Question{To run the PIC simulation, type \texttt{Smilei.sh $\sim$/TPUPMC/TP\_proj1.py}. The code will run and you will see the text output. Then, in the window that appears select diagnostics and choose \texttt{Uelm}, \texttt{Ex}, \texttt{Rho\_eon}, \texttt{jx}, and the phase space diagnostic (in the code this can be achieved with a \class{DiagParticleBinning}):
+    \Question{To run the PIC simulation \texttt{TP\_proj1.py}. Then, in the post processing window that appears select diagnostics and choose \texttt{Uelm}, \texttt{Ex}, \texttt{Rho\_eon}, \texttt{jx}, and the phase space diagnostic (in the code this can be achieved with a \class{DiagParticleBinning}):
 
 \lstinputlisting[linerange=45-53]{TP_proj1.py}
 
