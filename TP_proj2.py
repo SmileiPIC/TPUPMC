@@ -13,8 +13,7 @@ Main(
     cell_length = [length/32],
     number_of_patches = [ 1 ],
     print_every = output_every,
-    EM_boundary_conditions = [['periodic']],
-    poisson_max_iteration=0
+    EM_boundary_conditions = [['periodic']]
 )
 
 Species(
