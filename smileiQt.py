@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/python3 
 """
 Plot fields of smilei simulaition
 """
@@ -14,7 +14,7 @@ log.basicConfig(level=log.INFO,
 from pprint import pprint
 
 from matplotlib.figure import Figure
-from matplotlib.colors import LogNorm
+from matplotlib.colors import LogNorm, Normalize
 
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
@@ -102,7 +102,7 @@ class smileiQtPlot(QWidget):
         self.canvas.mpl_connect('button_press_event', self.on_button_press)
         
         self.toolbar = NavigationToolbar(self.canvas, self)
-        self.toolbar.setFixedHeight(18)
+        self.toolbar.setFixedHeight(30)
         self.canvas.setCursor(Qt.CrossCursor)
 
         self.ui.plotLayout.addWidget(self.toolbar)
@@ -321,6 +321,8 @@ class smileiQtPlot(QWidget):
                         im=ax.imshow([[0]],extent=(0,self.sim_length[0],0,self.sim_length[1]), aspect='auto',origin='lower')
                         im.set_interpolation('nearest')
                         cb=self.fig.colorbar(im, cax=cax, ax=ax)
+                        cb.on_mappable_changed(im)
+                        im.isLog=False
                         self.ax[name]=ax
 
                     plot+=1
@@ -333,25 +335,45 @@ class smileiQtPlot(QWidget):
                     phase=self.smilei.ParticleBinning(number)
                     self.phaseDict[name]=phase.getData()
                    
-                    if phase._naxes is not 2:
-                        log.error("phasespace len is not 2 : %s"%name)
-                        
-                        
-                    my_extent=[phase._axes[0]['min'],phase._axes[0]['max'],phase._axes[1]['min'],phase._axes[1]['max']]
-                    
-                    ax=self.fig.add_subplot(self.nplots,1,plot+1)
-                    ax.xaxis.grid(True)
-                    ax.yaxis.grid(True)
-                    ax.set_ylabel(name)
-                    divider = make_axes_locatable(ax)
-                    cax = divider.new_horizontal(size="2%", pad=0.05)
-                    self.fig.add_axes(cax)
-                    
-                    im=ax.imshow([[0]],extent=my_extent,aspect='auto',origin='lower')
-                    im.set_interpolation('nearest')
-                    cb=self.fig.colorbar(im, cax=cax, ax=ax)
+                    if phase._naxes is 1:
+                        axename = phase._axes[0]["type"]
 
-                    self.ax[name]=ax
+                        name=str(i.text())
+                        my_extent=[phase._axes[0]['min'],phase._axes[0]['max']]
+                        
+                        x=phase.getAxis(axename)
+                        
+                        y=self.phaseDict[name][0]
+
+                        ax=self.fig.add_subplot(self.nplots,1,plot+1)
+                        ax.set_xlabel(axename)
+                        ax.xaxis.grid(True)
+                        ax.yaxis.grid(True)
+
+                        ax.plot(x,y)
+                        ax.set_xlim(x.min(),x.max())
+                    
+                        self.ax[name]=ax
+
+                    elif phase._naxes is 2:                      
+                        my_extent=[phase._axes[0]['min'],phase._axes[0]['max'],phase._axes[1]['min'],phase._axes[1]['max']]
+                    
+                        ax=self.fig.add_subplot(self.nplots,1,plot+1)
+                        ax.xaxis.grid(True)
+                        ax.yaxis.grid(True)
+                        ax.set_ylabel(name)
+                        divider = make_axes_locatable(ax)
+                        cax = divider.new_horizontal(size="2%", pad=0.05)
+                        self.fig.add_axes(cax)
+                    
+                        im=ax.imshow([[0]],extent=my_extent,aspect='auto',origin='lower')
+                        im.set_interpolation('nearest')
+                        cb=self.fig.colorbar(im, cax=cax, ax=ax)
+                        cb.on_mappable_changed(im)
+                        im.isLog=False
+                        self.ax[name]=ax
+                    else :
+                         log.error("phasespace len is not 2 : %s"%name)
                     plot+=1
                 
             log.info("done")    
@@ -397,15 +419,23 @@ class smileiQtPlot(QWidget):
                     self.canvas.draw()
             elif event.inaxes.images :
                 for image in event.inaxes.images :
-                    mini = np.array(image.get_array()).clip(0).min()
-                    if mini >0:
-                        maxi = np.array(image.get_array()).clip(0).max()
-                        pprint (vars(event.inaxes.images[0].norm))
-                        try:
-                            event.inaxes.images[0].set_norm(LogNorm(mini,maxi))
-                            self.canvas.draw()
-                        except ValueError:
-                            self.canvas.draw()
+                    
+                    image.isLog = not image.isLog
+                    
+                    if image.isLog:
+                        mini = min(image.get_array()[image.get_array()>0])
+                        maxi = np.array(image.get_array().clip(0).max())
+                        norm=LogNorm(mini,maxi)
+                    else:
+                        mini = np.array(image.get_array().min())
+                        maxi = np.array(image.get_array().max())
+                        norm=Normalize(mini,maxi)
+                        
+                    image.colorbar.set_norm(norm)
+                    image.colorbar.mappable.set_norm(norm)
+                    
+                    self.canvas.draw()
+                    
         elif event.key == 'x':
             range, ok = QInputDialog.getText(self, 'Ranges', 'Give '+event.key+' range:')        
             if ok:
@@ -460,7 +490,7 @@ class smileiQtPlot(QWidget):
         self.slider.setValue(self.step)
         
         self.ui.spinStep.setValue(self.step)
-        # JDT time=float(self.step)/self.timestep*self.fieldEvery
+
         time=self.fieldSteps[self.step]*self.timestep
         
         self.fig.suptitle("Time: %g"%time)
@@ -483,11 +513,19 @@ class smileiQtPlot(QWidget):
 
                     
         for name in self.phaseDict:
-            data=self.phaseDict[name][self.step].T
-            im=self.ax[name].images[-1]
-            im.set_data(data)
-            if self.ui.autoScale.isChecked():
-                im.set_clim(data.min(),data.max())
+
+            if len(self.phaseDict[name][0].shape) is 1 :
+                data=self.phaseDict[name][self.step]
+                self.ax[name].lines[-1].set_ydata(data)
+                if self.ui.autoScale.isChecked():
+                    self.ax[name].set_ylim(min(data),max(data))
+                                
+            elif len(self.phaseDict[name][0].shape) is 2:     
+                data=self.phaseDict[name][self.step].T
+                im=self.ax[name].images[-1]
+                im.set_data(data)
+                if self.ui.autoScale.isChecked():
+                    im.set_clim(data.min(),data.max())
                                 
         self.canvas.draw()
         if self.ui.saveImages.isChecked():
@@ -555,7 +593,6 @@ class smileiQt(QMainWindow):
             self.addDir(str(dirName))
         
     def closeEvent(self,event):
-        self.save_settings()
         for plot in self.plots:
             plot.deleteLater()
         event.accept()
@@ -568,7 +605,6 @@ def sigint_handler(*args):
     print("Quitting")
     for my_plt in my_win.plots:
         my_plt.save_settings() 
-    my_win.save_settings()
     QApplication.exit()
 
 
