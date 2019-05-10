@@ -509,7 +509,10 @@ class smileiQtPlot(QWidget):
                 npData=np.array(data)
                 im.set_data(npData.T)
                 if self.ui.autoScale.isChecked():
-                    im.set_clim(npData.min(),npData.max())
+                    if im.isLog :
+                        im.set_clim(min(npData[data>0]),npData.max())
+                    else:
+                        im.set_clim(npData.min(),npData.max())
 
                     
         for name in self.phaseDict:
@@ -524,8 +527,13 @@ class smileiQtPlot(QWidget):
                 data=self.phaseDict[name][self.step].T
                 im=self.ax[name].images[-1]
                 im.set_data(data)
+
                 if self.ui.autoScale.isChecked():
-                    im.set_clim(data.min(),data.max())
+                    if im.isLog :
+                        im.set_clim(min(data[data>0]),data.max())
+                    else:
+                        im.set_clim(data.min(),data.max())                    
+
                                 
         self.canvas.draw()
         if self.ui.saveImages.isChecked():
