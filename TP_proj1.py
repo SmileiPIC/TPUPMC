@@ -1,3 +1,4 @@
+
 output_every=1
 n_part=10
 
@@ -9,7 +10,7 @@ Main(
     grid_length  = [4],
     cell_length = [0.2],
     number_of_patches = [ 1 ],
-    print_every = output_every,
+    print_every = 100,
     EM_boundary_conditions = [['periodic']]
 )
 
@@ -56,5 +57,3 @@ DiagFields(
     every = output_every,
     fields = ['Jx', 'Rho_eon']
 )
-
-

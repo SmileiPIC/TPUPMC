@@ -12,7 +12,7 @@ Main(
     grid_length = [length],
     cell_length = [length/32],
     number_of_patches = [ 1 ],
-    print_every = output_every,
+    print_every = 100,
     EM_boundary_conditions = [['periodic']]
 )
 

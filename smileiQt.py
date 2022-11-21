@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3
 """
 Plot fields of smilei simulaition
 """
@@ -15,6 +15,9 @@ from pprint import pprint
 
 from matplotlib.figure import Figure
 from matplotlib.colors import LogNorm
+
+import matplotlib
+matplotlib.use('Qt5Agg')
 
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
@@ -128,8 +131,13 @@ class smileiQtPlot(QWidget):
         self.ui.layoutScalars.addStretch()
 
 #fields
-        self.fieldSteps=self.smilei.Field(0).getAvailableTimesteps()
-        if not np.array_equal(scalarSteps,self.fieldSteps): 
+        fields=self.smilei.fieldInfo(0)["fields"]
+        self.fieldSteps=self.smilei.Field(0,fields[0]).getAvailableTimesteps()
+        
+        log.warning(len(self.fieldSteps))
+        log.warning(len(scalarSteps))
+
+        if len(scalarSteps) != len(self.fieldSteps): 
             newfieldSteps=[]
             for i in range(0,min(len(scalarSteps),len(self.fieldSteps))):
                 if scalarSteps[i] == self.fieldSteps[i]:
@@ -138,16 +146,17 @@ class smileiQtPlot(QWidget):
                     break
             self.fieldSteps=newfieldSteps
             log.warning("Problem reading fieldSteps")
-        for field in self.smilei.Field(0).getFields():
+        for field in self.smilei.Field(0,fields[0]).getFields():
             my_button= QCheckBox(field)
             my_button.stateChanged.connect(self.checkBoxChanged)
             self.ui.layoutFields.addWidget(my_button)
 
         self.ui.layoutFields.addStretch()
-
-        self.ui.slider.setRange(0,len(self.fieldSteps))
-        self.ui.spinStep.setSuffix("/"+str(len(self.fieldSteps)))
-        self.ui.spinStep.setMaximum(len(self.fieldSteps))
+		
+        numSteps=len(self.fieldSteps)
+        self.ui.slider.setRange(0,numSteps)
+        self.ui.spinStep.setSuffix("/"+str(numSteps))
+        self.ui.spinStep.setMaximum(numSteps)
 
 
 #phase spaces
@@ -333,7 +342,7 @@ class smileiQtPlot(QWidget):
                     phase=self.smilei.ParticleBinning(number)
                     self.phaseDict[name]=phase.getData()
                    
-                    if phase._naxes is not 2:
+                    if phase._naxes != 2:
                         log.error("phasespace len is not 2 : %s"%name)
                         
                         
@@ -536,7 +545,8 @@ class smileiQt(QMainWindow):
             self.ui.playStop.setChecked(False)
             
     def addDir(self,name):
-        self.plots.append(smileiQtPlot(self,name))
+        p=smileiQtPlot(self,name)
+        self.plots.append(p)
              
     def on_playStop_toggled(self):
         if self.playStop.isChecked() :
@@ -551,7 +561,7 @@ class smileiQt(QMainWindow):
         
     def on_dir_released(self):
         dirName=QFileDialog.getExistingDirectory(self,options=QFileDialog.ShowDirsOnly)
-        if not dirName.isEmpty():
+        if dirName != "":
             self.addDir(str(dirName))
         
     def closeEvent(self,event):
