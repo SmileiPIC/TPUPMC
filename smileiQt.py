@@ -183,8 +183,10 @@ class smileiQtPlot(QWidget):
         
         
     def reloadAll(self):
-        self.smilei=Smilei(self.dirName)
-        self.fieldSteps=self.smilei.Field(0).getAvailableTimesteps()
+        self.smilei=happi.Open(self.dirName)
+        fields=self.smilei.fieldInfo(0)["fields"]
+
+        self.fieldSteps=self.smilei.Field(0,fields[0]).getAvailableTimesteps()
         self.ui.slider.setRange(0,len(self.fieldSteps))
         self.ui.spinStep.setSuffix("/"+str(len(self.fieldSteps)))
         self.ui.spinStep.setMaximum(len(self.fieldSteps))
@@ -347,7 +349,8 @@ class smileiQtPlot(QWidget):
                         
                         
                     my_extent=[phase._axes[0]['min'],phase._axes[0]['max'],phase._axes[1]['min'],phase._axes[1]['max']]
-                    
+                    log.warning(my_extent)
+                    my_extent=[float(a) for a in my_extent]
                     ax=self.fig.add_subplot(self.nplots,1,plot+1)
                     ax.xaxis.grid(True)
                     ax.yaxis.grid(True)
@@ -357,6 +360,8 @@ class smileiQtPlot(QWidget):
                     self.fig.add_axes(cax)
                     
                     im=ax.imshow([[0]],extent=my_extent,aspect='auto',origin='lower')
+
+#                     im=ax.imshow([[0]],aspect='auto',origin='lower')
                     im.set_interpolation('nearest')
                     cb=self.fig.colorbar(im, cax=cax, ax=ax)
 
@@ -565,9 +570,9 @@ class smileiQt(QMainWindow):
             self.addDir(str(dirName))
         
     def closeEvent(self,event):
-        self.save_settings()
-        for plot in self.plots:
-            plot.deleteLater()
+        for my_plt in self.plots:
+            my_plt.save_settings() 
+            my_plt.deleteLater()
         event.accept()
         QApplication.exit()
 
